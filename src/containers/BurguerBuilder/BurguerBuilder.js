@@ -74,6 +74,7 @@ class BurguerBuilder extends Component {
                     ingredientRemoved={this.removeIngredientHandler}
                     //here we pass the entire object
                     disabled={disabledInfo}
+                    price={this.state.totalPrice}
                 />
             </Aux>
         )
