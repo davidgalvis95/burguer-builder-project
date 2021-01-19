@@ -13,7 +13,13 @@ const controls = [
 const buildControls = (props) => (
     <div className={classes.BuildControls}>
         {controls.map(control => {
-            return <BuildControl key={control.label} label={control.label}/>
+            return <BuildControl
+                key={control.label}
+                label={control.label}
+                //The method reference is called when the More button is clicked, so from there it identifies where the click was done and the data of the type us passed
+                //upwards, so that here the ES6 arrow function can take the type as input parameter, since it's required in the BurguerBuilder component
+                added={() => props.ingredientAdded(control.type)}
+            />
         })}
     </div>
 );
