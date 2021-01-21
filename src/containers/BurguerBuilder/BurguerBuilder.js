@@ -28,7 +28,8 @@ class BurguerBuilder extends Component {
             meat: 0
         },
         totalPrice:4,
-        purchasable: false
+        purchasable: false,
+        purchasing:false
     }
 
     updatePurchaseState (ingredients) {
@@ -75,6 +76,12 @@ class BurguerBuilder extends Component {
         this.updatePurchaseState(updatedIngredients);
     }
 
+    //This method has to work as an arrow function, since if that one works as a normal declared method the this keyword will point internally to the method, and not to the class
+    //as it's needed here
+    purchaseHandler = () => {
+        this.setState({purchasing:true})
+    }
+
     render() {
         //here we seize the fact that everytime something is rendered, this is again checked to see if the button needs to be disabled
         //here we get the ingredients from the state in an immutable way
@@ -86,7 +93,7 @@ class BurguerBuilder extends Component {
 
         return (
             <Aux>
-                <Modal>
+                <Modal show={this.state.purchasing}>
                     <OrderSummary ingredients={this.state.ingredients}/>
                 </Modal>
                 <Burguer ingredients={this.state.ingredients}/>
@@ -95,8 +102,9 @@ class BurguerBuilder extends Component {
                     ingredientRemoved={this.removeIngredientHandler}
                     //here we pass the entire object
                     disabled={disabledInfo}
-                    price={this.state.totalPrice}
                     purchasable={this.state.purchasable}
+                    ordered={this.purchaseHandler}
+                    price={this.state.totalPrice}
                 />
             </Aux>
         )
