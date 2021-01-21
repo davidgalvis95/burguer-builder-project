@@ -25,7 +25,21 @@ class BurguerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice:4
+        totalPrice:4,
+        purchasable: false
+    }
+
+    updatePurchaseState (ingredients) {
+        //When this object is called in the handlers, those methods have not finished their execution, so we may be playing with the old ingredients object instead of the new one
+        //this is why that we pass the updatedIngredients object into this method from the handlers
+        // const ingredients = { ...this.state.ingredients }
+
+        const sum = Object.keys(ingredients).map( ingredientKey => {
+            return ingredients[ingredientKey];
+        }).reduce((sum, el) => {
+            return sum + el;
+        },0);
+        this.setState({purchasable: sum > 0})
     }
 
     addIngredientHandler = (type) => {
@@ -39,6 +53,7 @@ class BurguerBuilder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice + priceAddition;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+        this.updatePurchaseState(updatedIngredients);
     }
 
     removeIngredientHandler = (type) => {
@@ -55,6 +70,7 @@ class BurguerBuilder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice - priceDeduction;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+        this.updatePurchaseState(updatedIngredients);
     }
 
     render() {
@@ -75,6 +91,7 @@ class BurguerBuilder extends Component {
                     //here we pass the entire object
                     disabled={disabledInfo}
                     price={this.state.totalPrice}
+                    purchasable={this.state.purchasable}
                 />
             </Aux>
         )
