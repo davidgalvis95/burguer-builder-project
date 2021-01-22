@@ -86,6 +86,10 @@ class BurguerBuilder extends Component {
         this.setState({purchasing:false})
     }
 
+    purchaseContinuedHandler = () => {
+        alert('You continued purchasing')
+    }
+
     render() {
         //here we seize the fact that everytime something is rendered, this is again checked to see if the button needs to be disabled
         //here we get the ingredients from the state in an immutable way
@@ -99,7 +103,11 @@ class BurguerBuilder extends Component {
             <Aux>
                 {/*If this is done this way this.purchaseCanceledHandler() will cause react to render an infinite loop in componentDidMount hook*/}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCanceledHandler}>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        purchaseCancelled={this.purchaseCanceledHandler}
+                        purchaseContinued={this.purchaseContinuedHandler}
+                    />
                 </Modal>
                 <Burguer ingredients={this.state.ingredients}/>
                 <BuildControls
