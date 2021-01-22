@@ -1,0 +1,10 @@
+.Backdrop{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    /*this is needed to make it appear over other components but nor the Modal one*/
+    z-index: 100;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
