@@ -20,3 +20,10 @@
 .Logo {
     height: 80%;
 }
+
+@media (max-width: 499px) {
+    /*This media query makes that the toolbar for desktop wont be displayed when screen less than 499px or mobile*/
+    .DesktopOnly{
+        display: none;
+    }
+}

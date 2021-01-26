@@ -12,7 +12,8 @@ const toolbar = (props) => (
         <div className={classes.Logo}>
             <Logo/>
         </div>
-        <nav>
+        {/*This is the class taken from the one that only is displayed in desktop*/}
+        <nav className={classes.DesktopOnly}>
             <NavigationItems/>
         </nav>
     </header>

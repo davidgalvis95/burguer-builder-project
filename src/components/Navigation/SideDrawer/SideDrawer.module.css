@@ -29,4 +29,6 @@
 
 .Logo {
     height: 11%;
+    /*This is done to give more space to the logo before the tabs*/
+    margin-bottom: 32px;
 }

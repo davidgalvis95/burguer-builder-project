@@ -1,8 +1,19 @@
+/*Here is how that works for mobile*/
 .NavigationItems {
     margin: 0;
     padding: 0;
     list-style: none;
     display: flex;
+    /*This displays the objects one beneath the other, piled*/
+    flex-flow: column;
     align-items: center;
     height: 100%;
+}
+
+/*Here is how that works for desktop*/
+@media (min-width: 500px) {
+    .NavigationItems{
+        /*This displays the objects one next to the other*/
+        flex-flow: row;
+    }
 }
