@@ -15,16 +15,23 @@ class Layout extends Component {
         showSideDrawer: false
     }
     //This handler will close the sideDrawer
+    closeDrawerClosedHandler = () => {
+        this.setState({showSideDrawer: false})
+    }
+
     toggleDrawerClosedHandler = () => {
-        const showSideDrawerUpdate = !this.state.showSideDrawer;
-        this.setState({showSideDrawer: showSideDrawerUpdate})
+        //When there is a state that is dependant on the previous state, the safest way to update it is following
+        //The prevState convention, otherwise it could lead to unpredictable state updates
+        this.setState((prevState) => {
+            return {showSideDrawer: !prevState.showSideDrawer}
+        })
     }
     render() {
         return (
             <Aux>
                 <Toolbar showSideDrawer={this.toggleDrawerClosedHandler}/>
                 <SideDrawer
-                    closed={this.toggleDrawerClosedHandler}
+                    closed={this.closeDrawerClosedHandler}
                     open={this.state.showSideDrawer}
                 />
                 <main className={classes.Content}>
