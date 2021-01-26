@@ -1,19 +1,37 @@
-import React from "react";
+import React, {Component} from "react";
 
 import Aux from '../../hoc/Aux';
 import classes from './Layout.module.css'
 import Toolbar from '../Navigation/Toolbar/Toolbar'
 import SideDrawer from '../Navigation/SideDrawer/SideDrawer'
 
-const layout = (props) => (
-        <Aux>
-            <Toolbar />
-            <SideDrawer/>
-            <main className={classes.Content}>
-                {props.children}
-            </main>
-        </Aux>
-);
+//We decided to convert this component into a class based one, because actually we want to trigger the BackDrop and SideDrawer
+//Using the MENU div that is residing in the Toolbar component. We could convert the SideDrawer component into a stateful one and toggle the SideDrawer and
+// Backdrop components to shown/not-shown from there, but since the goal is to reuse the components, here we will handle the toggling from here, where the
+//Toolbar and SideDrawer components have a common place, so that we can trigger an event to show the SideDrawer from the MENU and close it as well
+class Layout extends Component {
 
+    state = {
+        showSideDrawer: true
+    }
+    //This handler will close the sideDrawer
+    sideDrawerClosedHandler = () => {
+        this.setState({showSideDrawer: false})
+    }
+    render() {
+        return (
+            <Aux>
+                <Toolbar />
+                <SideDrawer
+                    closed={this.sideDrawerClosedHandler}
+                    open={this.state.showSideDrawer}
+                />
+                <main className={classes.Content}>
+                    {this.props.children}
+                </main>
+            </Aux>
+        );
+    }
+}
 
-export default layout;
+export default Layout;
