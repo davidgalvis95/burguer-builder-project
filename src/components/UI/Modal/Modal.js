@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 
 import classes from './Modal.module.css'
-import Aux from '../../../hoc/Aux'
+import Aux from '../../../hoc/Aux/Aux'
 import Backdrop from '../Backdrop/Backdrop'
 
 //We have converted this component into a class based component because we want to create a condition
