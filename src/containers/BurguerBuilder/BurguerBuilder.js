@@ -103,6 +103,7 @@ class BurguerBuilder extends Component {
             <Aux>
                 {/*If this is done this way this.purchaseCanceledHandler() will cause react to render an infinite loop in componentDidMount hook*/}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCanceledHandler}>
+                    {/*Actually order summary is being shown even if the show property is not being triggered by the purchaseHandler and the 'Order now' button*/}
                     <OrderSummary
                         ingredients={this.state.ingredients}
                         purchaseCancelled={this.purchaseCanceledHandler}
