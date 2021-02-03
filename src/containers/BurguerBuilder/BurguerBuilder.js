@@ -5,6 +5,7 @@ import Burguer from '../../components/Burguer/Burguer'
 import BuildControls from '../../components/Burguer/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
+import axios from '../../axios-orders'
 
 
 const INGREDIENT_PRICES = {
@@ -27,21 +28,21 @@ class BurguerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice:4,
+        totalPrice: 4,
         purchasable: false,
-        purchasing:false
+        purchasing: false
     }
 
-    updatePurchaseState (ingredients) {
+    updatePurchaseState(ingredients) {
         //When this object is called in the handlers, those methods have not finished their execution, so we may be playing with the old ingredients object instead of the new one
         //this is why that we pass the updatedIngredients object into this method from the handlers
         // const ingredients = { ...this.state.ingredients }
 
-        const sum = Object.keys(ingredients).map( ingredientKey => {
+        const sum = Object.keys(ingredients).map(ingredientKey => {
             return ingredients[ingredientKey];
         }).reduce((sum, el) => {
             return sum + el;
-        },0);
+        }, 0);
         this.setState({purchasable: sum > 0})
     }
 
@@ -50,7 +51,7 @@ class BurguerBuilder extends Component {
         const updatedCount = oldCount + 1;
         //here we use the spread operator, since we have to edit the state in an immutable way, since arrays and objects are reference types
         //A new constant is generated
-        const updatedIngredients = { ...this.state.ingredients };
+        const updatedIngredients = {...this.state.ingredients};
         updatedIngredients[type] = updatedCount;
         const priceAddition = INGREDIENT_PRICES[type];
         const oldPrice = this.state.totalPrice;
@@ -61,13 +62,13 @@ class BurguerBuilder extends Component {
 
     removeIngredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
-        if(oldCount <= 0){
+        if (oldCount <= 0) {
             return;
         }
         const updatedCount = oldCount - 1;
         //here we use the spread operator, since we have to edit the state in an immutable way, since arrays and objects are reference types
         //A new constant is generated
-        const updatedIngredients = { ...this.state.ingredients };
+        const updatedIngredients = {...this.state.ingredients};
         updatedIngredients[type] = updatedCount;
         const priceDeduction = INGREDIENT_PRICES[type];
         const oldPrice = this.state.totalPrice;
@@ -79,23 +80,39 @@ class BurguerBuilder extends Component {
     //This method has to work as an arrow function, since if that one works as a normal declared method the this keyword will point internally to the method, and not to the class
     //as it's needed here
     purchaseHandler = () => {
-        this.setState({purchasing:true})
+        this.setState({purchasing: true})
     }
 
     purchaseCanceledHandler = () => {
-        this.setState({purchasing:false})
+        this.setState({purchasing: false})
     }
 
     purchaseContinuedHandler = () => {
-        alert('You continued purchasing')
+        //creating the object to sent to the 'backend'
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'David Galvis',
+                address: {
+                    address: 'test address 111',
+                    zipCode: '123282',
+                    country: 'Colombia'
+                },
+                deliveryMethod: 'fastest'
+            }
+        }
+
+        //sending the request to the api
+        axios.post('/orders.json', order).then(response => console.log(response)).catch(error => console.log(error));
     }
 
     render() {
         //here we seize the fact that everytime something is rendered, this is again checked to see if the button needs to be disabled
         //here we get the ingredients from the state in an immutable way
-        const disabledInfo = { ...this.state.ingredients };
+        const disabledInfo = {...this.state.ingredients};
         //if the ingredient for that key has a count of <= 0 then is disabled, otherwise it's not
-        for(let key in disabledInfo){
+        for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
 
