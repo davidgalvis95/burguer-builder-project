@@ -7,6 +7,7 @@ import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 
 const INGREDIENT_PRICES = {
@@ -109,14 +110,17 @@ class BurguerBuilder extends Component {
 
         //sending the request to the api
         //until we get a response or an error, the state is set no not loading
+
+        //This is just a test url to test the error handler that wraps this component
+        // axios.post('/orders.jso', order)
         axios.post('/orders.json', order)
             .then(response => {
                 console.log(response);
-                this.setState({loading: false, purchasing:false});
+                this.setState({loading: false, purchasing: false});
             })
             .catch(error => {
                 console.log(error);
-                this.setState({loading: false, purchasing:false});
+                this.setState({loading: false, purchasing: false});
             });
 
     }
@@ -137,7 +141,7 @@ class BurguerBuilder extends Component {
             price={this.state.totalPrice}/>;
 
         //if the state is loading, then show the spinner
-        if(this.state.loading){
+        if (this.state.loading) {
             orderSummary = <Spinner/>;
         }
 
@@ -163,4 +167,4 @@ class BurguerBuilder extends Component {
     }
 }
 
-export default BurguerBuilder;
+export default withErrorHandler(BurguerBuilder, axios);
