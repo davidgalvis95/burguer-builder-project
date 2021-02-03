@@ -10,7 +10,9 @@ import Backdrop from '../Backdrop/Backdrop'
 class Modal extends Component{
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return nextProps.show !== this.props.show;
+        //We added the comparing between the children and the nextChildren since if the loading state is true,
+        // then one children object is shown, otherwise the other, so only with the previous way it was not possible
+        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

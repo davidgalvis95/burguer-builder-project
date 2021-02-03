@@ -6,6 +6,7 @@ import BuildControls from '../../components/Burguer/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
+import Spinner from '../../components/UI/Spinner/Spinner'
 
 
 const INGREDIENT_PRICES = {
@@ -30,7 +31,8 @@ class BurguerBuilder extends Component {
         },
         totalPrice: 4,
         purchasable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
     }
 
     updatePurchaseState(ingredients) {
@@ -89,6 +91,8 @@ class BurguerBuilder extends Component {
 
     purchaseContinuedHandler = () => {
         //creating the object to sent to the 'backend'
+        //when starting to send the request, the state is set to loading
+        this.setState({loading: true});
         const order = {
             ingredients: this.state.ingredients,
             price: this.state.totalPrice,
@@ -104,8 +108,19 @@ class BurguerBuilder extends Component {
         }
 
         //sending the request to the api
-        axios.post('/orders.json', order).then(response => console.log(response)).catch(error => console.log(error));
+        //until we get a response or an error, the state is set no not loading
+        axios.post('/orders.json', order)
+            .then(response => {
+                console.log(response);
+                this.setState({loading: false, purchasing:false});
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState({loading: false, purchasing:false});
+            });
+
     }
+
 
     render() {
         //here we seize the fact that everytime something is rendered, this is again checked to see if the button needs to be disabled
@@ -115,18 +130,23 @@ class BurguerBuilder extends Component {
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
+        let orderSummary = <OrderSummary
+            ingredients={this.state.ingredients}
+            purchaseCancelled={this.purchaseCanceledHandler}
+            purchaseContinued={this.purchaseContinuedHandler}
+            price={this.state.totalPrice}/>;
+
+        //if the state is loading, then show the spinner
+        if(this.state.loading){
+            orderSummary = <Spinner/>;
+        }
 
         return (
             <Aux>
                 {/*If this is done this way this.purchaseCanceledHandler() will cause react to render an infinite loop in componentDidMount hook*/}
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCanceledHandler}>
                     {/*Actually order summary is being shown even if the show property is not being triggered by the purchaseHandler and the 'Order now' button*/}
-                    <OrderSummary
-                        ingredients={this.state.ingredients}
-                        purchaseCancelled={this.purchaseCanceledHandler}
-                        purchaseContinued={this.purchaseContinuedHandler}
-                        price={this.state.totalPrice}
-                    />
+                    {orderSummary}
                 </Modal>
                 <Burguer ingredients={this.state.ingredients}/>
                 <BuildControls
