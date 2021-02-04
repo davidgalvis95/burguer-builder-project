@@ -24,16 +24,21 @@ class BurguerBuilder extends Component {
     // }
 
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        error:null
+    }
+
+    componentDidMount() {
+        axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.jsn')
+            .then(response => {
+                this.setState({ingredients: response.data});
+            })
+            .catch(error => this.setState({error:error}))
+            // .catch(error => {})
     }
 
     updatePurchaseState(ingredients) {
@@ -134,13 +139,39 @@ class BurguerBuilder extends Component {
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
-        let orderSummary = <OrderSummary
-            ingredients={this.state.ingredients}
-            purchaseCancelled={this.purchaseCanceledHandler}
-            purchaseContinued={this.purchaseContinuedHandler}
-            price={this.state.totalPrice}/>;
+        let orderSummary = null;
+
+        console.log(this.state.error);
+        let burguer = this.state.error ? <h3 style={{'textAlign':'center'}}>Ingredients could not be loaded</h3>:<Spinner/>;
+
+        //This was required because initially the state of the ingredients is null with these changes, and after the component gets mounted it will
+        // go and fetch the data from firebase, so, that's why this condition is needed, here in this condition we add all the components that are dependant on if
+        //there are ingredients or not
+        if(this.state.ingredients) {
+            burguer = (
+                <Aux>
+                    <Burguer ingredients={this.state.ingredients}/>
+                    <BuildControls
+                        ingredientAdded={this.addIngredientHandler}
+                        ingredientRemoved={this.removeIngredientHandler}
+                        //here we pass the entire object
+                        disabled={disabledInfo}
+                        purchasable={this.state.purchasable}
+                        ordered={this.purchaseHandler}
+                        price={this.state.totalPrice}
+                    />
+                </Aux>
+            );
+            //if the ingredients are set, we also will set the orderSummary
+            orderSummary = <OrderSummary
+                ingredients={this.state.ingredients}
+                purchaseCancelled={this.purchaseCanceledHandler}
+                purchaseContinued={this.purchaseContinuedHandler}
+                price={this.state.totalPrice}/>;
+        }
 
         //if the state is loading, then show the spinner
+        //set after checking for ingredients, because this happens after
         if (this.state.loading) {
             orderSummary = <Spinner/>;
         }
@@ -152,16 +183,7 @@ class BurguerBuilder extends Component {
                     {/*Actually order summary is being shown even if the show property is not being triggered by the purchaseHandler and the 'Order now' button*/}
                     {orderSummary}
                 </Modal>
-                <Burguer ingredients={this.state.ingredients}/>
-                <BuildControls
-                    ingredientAdded={this.addIngredientHandler}
-                    ingredientRemoved={this.removeIngredientHandler}
-                    //here we pass the entire object
-                    disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
-                    ordered={this.purchaseHandler}
-                    price={this.state.totalPrice}
-                />
+                {burguer}
             </Aux>
         )
     }
