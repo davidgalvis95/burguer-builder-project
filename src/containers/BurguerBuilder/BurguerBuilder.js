@@ -33,7 +33,7 @@ class BurguerBuilder extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.jsn')
+        axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.json')
             .then(response => {
                 this.setState({ingredients: response.data});
             })

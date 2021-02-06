@@ -31,8 +31,11 @@ const withErrorHandler = (WrappedComponent, axios) => {
 
         }
 
+        reqInterceptor = null;
+        resInterceptor = null;
+
         interceptErrors = () => {
-            axios.interceptors.request.use(req => {
+            this.reqInterceptor = axios.interceptors.request.use(req => {
                 //here we set the error:null since we want no errors when sending a new request (reset the state)
                 this.setState({error:null});
                 //we need to return the request in order to get that working ok!
@@ -40,13 +43,24 @@ const withErrorHandler = (WrappedComponent, axios) => {
                 return req;
             });
             //we need to return the response in order to get that working ok, the shortest way to do it is by doing the res => res
-            axios.interceptors.response.use(res => res,error => {
+            this.resInterceptor = axios.interceptors.response.use(res => res,error => {
                 //here we will set the error the we receive if we get back a bad response
                 this.setState({error:error});
                 console.log(error)
                 this.setState({response:true});
                 return Promise.reject(error);
             });
+        }
+
+        //Here we are ejecting the request interceptors of this particular instance of returned by the withErrorHandler
+        //due that we do not want all the interceptors to exist even if they are not being used now, otherwise we won't have a hoc component
+        //because the more components we wrap with this one to intercept the errors, the more complexity we will get
+        //so for every instance that we create of this returned component will store interceptors that we will need to eject once the component is unmounted
+        //otherwise it could create memory leaks
+        componentWillUnmount() {
+            console.log('WillMount [WithErrorHandler]',this.reqInterceptor, this.resInterceptor)
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.request.eject(this.resInterceptor);
         }
 
         closeModalAndAcknowledgeErrorHandler = () => {
