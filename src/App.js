@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 
 import Layout from './hoc/Layout/Layout'
 import BurguerBuilder from './containers/BurguerBuilder/BurguerBuilder';
+import Checkout from "./containers/Checkout/Checkout";
 
 class App extends Component {
 
@@ -24,7 +25,9 @@ class App extends Component {
         <div>
           <Layout>
               {/*{burguerBuilder}*/}
-            <BurguerBuilder></BurguerBuilder>
+            <BurguerBuilder/>
+            {/*This checkout is added in order to see how it looks(to be implemented with router)*/}
+            <Checkout/>
           </Layout>
         </div>
     );
