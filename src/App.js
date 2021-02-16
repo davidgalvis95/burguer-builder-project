@@ -3,6 +3,8 @@ import React, {Component} from 'react'
 import Layout from './hoc/Layout/Layout'
 import BurguerBuilder from './containers/BurguerBuilder/BurguerBuilder';
 import Checkout from "./containers/Checkout/Checkout";
+import {Route} from "react-router-dom";
+import {Switch} from "react-router";
 
 class App extends Component {
 
@@ -24,10 +26,11 @@ class App extends Component {
     return (
         <div>
           <Layout>
-              {/*{burguerBuilder}*/}
-            <BurguerBuilder/>
-            {/*This checkout is added in order to see how it looks(to be implemented with router)*/}
-            <Checkout/>
+            <Switch>
+                {/*The order with the switch needs to be from the most specific to the less specific one*/}
+                <Route path="/checkout" component={Checkout}/>
+                <Route path="/" component={BurguerBuilder}/>
+            </Switch>
           </Layout>
         </div>
     );
