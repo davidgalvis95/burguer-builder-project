@@ -13,6 +13,18 @@ class Checkout extends Component {
         }
     }
 
+    componentDidMount() {
+        //the URLSearchParams is an object that takes the query params and builds an array of pairs with each param like:
+        //[['key','value'], ['key','value']] for each param that is passed
+        const query = new URLSearchParams(this.props.location.search);
+        const ingredients = {};
+        for(let param of query.entries()){
+            //['salad', '1']
+            ingredients[param[0]] = +param[1];
+        }
+        this.setState({ingredients: ingredients})
+    }
+
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
     }

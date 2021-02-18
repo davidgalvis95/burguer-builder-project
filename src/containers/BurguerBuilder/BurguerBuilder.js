@@ -127,7 +127,19 @@ class BurguerBuilder extends Component {
         //         console.log(error);
         //         this.setState({loading: false, purchasing: false});
         //     });
-        this.props.history.push('/checkout');
+
+        //this is an array made to pass the properties
+        const queryParams = [];
+        //iterating over each ingredient to build the query search params
+        for(let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
+        }
+        //Joining all the query params in a single string
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        });
     }
 
 
