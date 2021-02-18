@@ -14,8 +14,8 @@ const checkoutSummary = (props) => {
                 <Burguer ingredients={props.ingredients}/>
             </div>
             {/*Here are the same buttons we have used in the OrderSummary component, with a clicked functionality to be implemented*/}
-            <Button btnType="Danger" clicked>CANCEL</Button>
-            <Button btnType="Success" clicked>CONTINUE</Button>
+            <Button btnType="Danger" clicked={props.checkoutCancelled}>CANCEL</Button>
+            <Button btnType="Success" clicked={props.checkoutContinued}>CONTINUE</Button>
         </div>
     )
 }

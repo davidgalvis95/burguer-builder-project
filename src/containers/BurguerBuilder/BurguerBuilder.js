@@ -98,36 +98,36 @@ class BurguerBuilder extends Component {
     purchaseContinuedHandler = () => {
         //creating the object to sent to the 'backend'
         //when starting to send the request, the state is set to loading
-        this.setState({loading: true});
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'David Galvis',
-                address: {
-                    address: 'test address 111',
-                    zipCode: '123282',
-                    country: 'Colombia'
-                },
-                deliveryMethod: 'fastest'
-            }
-        }
-
-        //sending the request to the api
-        //until we get a response or an error, the state is set no not loading
-
-        //This is just a test url to test the error handler that wraps this component
-        // axios.post('/orders.jso', order)
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response);
-                this.setState({loading: false, purchasing: false});
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({loading: false, purchasing: false});
-            });
-
+        // this.setState({loading: true});
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice,
+        //     customer: {
+        //         name: 'David Galvis',
+        //         address: {
+        //             address: 'test address 111',
+        //             zipCode: '123282',
+        //             country: 'Colombia'
+        //         },
+        //         deliveryMethod: 'fastest'
+        //     }
+        // }
+        //
+        // //sending the request to the api
+        // //until we get a response or an error, the state is set no not loading
+        //
+        // //This is just a test url to test the error handler that wraps this component
+        // // axios.post('/orders.jso', order)
+        // axios.post('/orders.json', order)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.setState({loading: false, purchasing: false});
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //         this.setState({loading: false, purchasing: false});
+        //     });
+        this.props.history.push('/checkout');
     }
 
 
@@ -189,4 +189,5 @@ class BurguerBuilder extends Component {
     }
 }
 
-export default withErrorHandler(BurguerBuilder, axios);
+// export default withErrorHandler(BurguerBuilder, axios);
+export default BurguerBuilder;
