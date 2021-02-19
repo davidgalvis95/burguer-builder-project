@@ -96,44 +96,13 @@ class BurguerBuilder extends Component {
     }
 
     purchaseContinuedHandler = () => {
-        //creating the object to sent to the 'backend'
-        //when starting to send the request, the state is set to loading
-        // this.setState({loading: true});
-        // const order = {
-        //     ingredients: this.state.ingredients,
-        //     price: this.state.totalPrice,
-        //     customer: {
-        //         name: 'David Galvis',
-        //         address: {
-        //             address: 'test address 111',
-        //             zipCode: '123282',
-        //             country: 'Colombia'
-        //         },
-        //         deliveryMethod: 'fastest'
-        //     }
-        // }
-        //
-        // //sending the request to the api
-        // //until we get a response or an error, the state is set no not loading
-        //
-        // //This is just a test url to test the error handler that wraps this component
-        // // axios.post('/orders.jso', order)
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         console.log(response);
-        //         this.setState({loading: false, purchasing: false});
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //         this.setState({loading: false, purchasing: false});
-        //     });
-
         //this is an array made to pass the properties
         const queryParams = [];
         //iterating over each ingredient to build the query search params
         for(let i in this.state.ingredients){
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
         }
+        queryParams.push('price=' + this.state.totalPrice);
         //Joining all the query params in a single string
         const queryString = queryParams.join('&');
         this.props.history.push({
