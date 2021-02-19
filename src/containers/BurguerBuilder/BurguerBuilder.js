@@ -201,5 +201,5 @@ class BurguerBuilder extends Component {
     }
 }
 
-// export default withErrorHandler(BurguerBuilder, axios);
-export default BurguerBuilder;
+export default withErrorHandler(BurguerBuilder, axios);
+// export default BurguerBuilder;
