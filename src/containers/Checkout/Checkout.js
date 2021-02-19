@@ -50,8 +50,6 @@ class Checkout extends Component {
                     <ContactData
                     ingredients={this.state.ingredients}
                     price={this.state.price}
-                    {/*These props are passed since the ContactData does not have router props, due that there is no component router that imports them
-                    so here we are passing all the props that are coming from*/}
                     {...props}/>
                     )}/>
 

@@ -64,7 +64,7 @@ class ContactData extends Component {
             <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
         </form>);
 
-        if(!this.state.loading){
+        if(this.state.loading){
             form = <Spinner/>;
         }
 
