@@ -11,6 +11,7 @@ class Checkout extends Component {
         price:0
     }
 
+    //TODO this will be needed as a constructor and not a will mount hook
     componentWillMount() {
         //the URLSearchParams is an object that takes the query params and builds an array of pairs with each param like:
         //[['key','value'], ['key','value']] for each param that is passed
