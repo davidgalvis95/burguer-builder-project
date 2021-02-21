@@ -9,11 +9,59 @@ import Input from '../../../components/UI/Input/Input'
 
 class ContactData extends Component {
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            postalCode: ''
+        orderForm: {
+            customer: {
+                name: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'your name'
+                    },
+                    value: ''
+                },
+                street: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'your street'
+                    },
+                    value: ''
+                },
+                zipCode: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'your zip code'
+                    },
+                    value: ''
+                },
+                country: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'your country'
+                    },
+                    value: ''
+                },
+                email: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'your e-mail'
+                    },
+                    value: ''
+                },
+                deliveryMethod: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: 'fastest', displayValue: 'Fastest'},
+                            {value: 'cheapest', displayValue: 'Cheapest'}
+                        ]
+                    },
+                    value: ''
+                }
+            }
         },
         loading: false
     }
@@ -47,26 +95,26 @@ class ContactData extends Component {
         axios.post('/orders.json', order)
             .then(response => {
                 console.log(response);
-                this.setState({loading: false });
+                this.setState({loading: false});
                 this.props.history.push('/');
             })
             .catch(error => {
                 console.log(error);
-                this.setState({loading: false });
+                this.setState({loading: false});
             });
     }
 
     render() {
         //here we have changed the default input by the custom created input
         let form = (<form>
-            <Input inputtype="input" type="text" name="name" placeholder="Your name"/>
+            <Input elementType="..." elementConfig="..." value="..."/>
             <Input inputtype="input" type="email" name="email" placeholder="Your email"/>
             <Input inputtype="input" type="text" name="street" placeholder="Street"/>
             <Input inputtype="input" type="text" name="postal" placeholder="Postal code"/>
             <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
         </form>);
 
-        if(this.state.loading){
+        if (this.state.loading) {
             form = <Spinner/>;
         }
 
