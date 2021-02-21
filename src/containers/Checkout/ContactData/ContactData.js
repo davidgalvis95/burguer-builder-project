@@ -52,6 +52,7 @@ class ContactData extends Component {
                     value: ''
                 },
                 deliveryMethod: {
+                    //We do need to create this type in the custom Input component since so far we only have 'input' and 'textarea', but no select
                     elementType: 'select',
                     elementConfig: {
                         options: [
@@ -105,12 +106,28 @@ class ContactData extends Component {
     }
 
     render() {
+
+        const formElementsArray = [];
+        //converting the orderForm created in the state to an array to dynamically create input elements with the custom component from it
+        for(let key in this.state.orderForm){
+            formElementsArray.push({
+                //This is the key of any object, in this case the names of the object e.g 'name', 'street'
+                id: key,
+                config: this.state.orderForm[key]
+            })
+        }
+
         //here we have changed the default input by the custom created input
         let form = (<form>
-            <Input elementType="..." elementConfig="..." value="..."/>
-            <Input inputtype="input" type="email" name="email" placeholder="Your email"/>
-            <Input inputtype="input" type="text" name="street" placeholder="Street"/>
-            <Input inputtype="input" type="text" name="postal" placeholder="Postal code"/>
+            {formElementsArray.map(formElement => {
+                return <Input
+                    //as always when building an array of JSX the key is needed
+                    key={formElement.id}
+                    elementType={formElement.config.elementType}
+                    elementConfig={formElement.config.elementConfig}
+                    value={formElement.config.value}
+                />
+            })}
             <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
         </form>);
 
