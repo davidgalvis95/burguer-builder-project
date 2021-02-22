@@ -6,27 +6,32 @@ import ContactData from "./ContactData/ContactData";
 
 class Checkout extends Component {
 
-    state = {
-        ingredients: null,
-        price:0
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            ingredients: this.queryParamsBuilder().ingredients,
+            price: this.queryParamsBuilder().price
+        }
     }
 
-    //TODO this will be needed as a constructor and not a will mount hook
-    componentWillMount() {
-        //the URLSearchParams is an object that takes the query params and builds an array of pairs with each param like:
-        //[['key','value'], ['key','value']] for each param that is passed
+    queryParamsBuilder = () => {
         const query = new URLSearchParams(this.props.location.search);
-        const ingredients = {};
-        let price =0;
+        const checkoutVariables = {
+            ingredients: {},
+            price: 0
+        };
+
         for(let param of query.entries()){
             //['salad', '1']
             if(param[0] === 'price'){
-                price = param[1];
+                checkoutVariables.price = param[1];
             }else{
-                ingredients[param[0]] = +param[1];
+                //TODO this will be needed as a constructor and not a will mount hook
+                checkoutVariables.ingredients[param[0]] = +param[1];
             }
         }
-        this.setState({ingredients: ingredients, price: price})
+        return checkoutVariables;
     }
 
     checkoutCancelledHandler = () => {
