@@ -52,7 +52,6 @@ class ContactData extends Component {
                     value: ''
                 },
                 deliveryMethod: {
-                    //We do need to create this type in the custom Input component since so far we only have 'input' and 'textarea', but no select
                     elementType: 'select',
                     elementConfig: {
                         options: [
@@ -69,23 +68,28 @@ class ContactData extends Component {
 
     orderHandler = (event) => {
         event.preventDefault();
-        console.log(this.props.ingredients);
+        // console.log(this.props.ingredients);
 
         // creating the object to sent to the 'backend'
         // when starting to send the request, the state is set to loading
         this.setState({loading: true});
+
+        //looping over every element of the orderForm and mapping the 'key' of orderForm, into a key of formData,
+        // and the value of a given key into the value of formData
+        const formData = {}
+        for (let formElementIdentifier in this.state.orderForm){
+            //using destructuring to build an object like
+            //  {
+            //      name: 'david'
+            //      street: '321432'
+            //  }
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+        }
+
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
-            customer: {
-                name: 'David Galvis',
-                address: {
-                    address: 'test address 111',
-                    zipCode: '123282',
-                    country: 'Colombia'
-                },
-                deliveryMethod: 'fastest'
-            }
+            orderData: formData
         }
 
         //sending the request to the api
@@ -111,20 +115,20 @@ class ContactData extends Component {
         //so far with the next line of code, this only creates a clone of the wrapper object (in this case the array of the outerForm)
         //but it does not create a clone of the internal nested objects as the elementConfig or even the value, that's why we need to clone them all or
         //just replace what we need to replace
-        const updatedOrderForm = { ...this.state.orderForm }
-        const updatedFormElement = { ...updatedOrderForm[inputIdentifier] }
+        const updatedOrderForm = {...this.state.orderForm}
+        const updatedFormElement = {...updatedOrderForm[inputIdentifier]}
         //If we were working with the elementConfig, that is an element that is nested inside one of the elements of the orderForm, we would also
         //needed to use the spread operator to clone it, but since that's not the case, we only will clone one of the elements and access the value
         updatedFormElement.value = event.target.value;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
-        this.setState({orderForm:updatedOrderForm});
+        this.setState({orderForm: updatedOrderForm});
     }
 
     render() {
 
         const formElementsArray = [];
         //converting the orderForm created in the state to an array to dynamically create input elements with the custom component from it
-        for(let key in this.state.orderForm){
+        for (let key in this.state.orderForm) {
             formElementsArray.push({
                 //This is the key of any object, in this case the names of the object e.g 'name', 'street'
                 id: key,
@@ -133,21 +137,22 @@ class ContactData extends Component {
         }
 
         //here we have changed the default input by the custom created input
-        let form = (<form>
-            {formElementsArray.map(formElement => {
-                return <Input
-                    //as always when building an array of JSX the key is needed
-                    key={formElement.id}
-                    elementType={formElement.config.elementType}
-                    elementConfig={formElement.config.elementConfig}
-                    value={formElement.config.value}
-                    //since here is needed to pass data as two way binding, there we need to get what is now stored
-                    //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
-                    //and is not updated because the state of the form is not updated
-                    changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
-            })}
-            <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
-        </form>);
+        let form = (
+            <form onSubmit={this.orderHandler}>
+                {formElementsArray.map(formElement => {
+                    return <Input
+                        //as always when building an array of JSX the key is needed
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value}
+                        //since here is needed to pass data as two way binding, there we need to get what is now stored
+                        //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
+                        //and is not updated because the state of the form is not updated
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+                })}
+                <Button btnType="Success">ORDER</Button>
+            </form>);
 
         if (this.state.loading) {
             form = <Spinner/>;
