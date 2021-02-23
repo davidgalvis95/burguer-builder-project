@@ -17,7 +17,13 @@ class ContactData extends Component {
                         type: 'text',
                         placeholder: 'your name'
                     },
-                    value: ''
+                    value: '',
+                    validation: {
+                        required: true,
+                        minLength: 5,
+                        maxLength: 10
+                    },
+                    valid: false
                 },
                 street: {
                     elementType: 'input',
@@ -25,7 +31,11 @@ class ContactData extends Component {
                         type: 'text',
                         placeholder: 'your street'
                     },
-                    value: ''
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false
                 },
                 zipCode: {
                     elementType: 'input',
@@ -33,7 +43,11 @@ class ContactData extends Component {
                         type: 'text',
                         placeholder: 'your zip code'
                     },
-                    value: ''
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false
                 },
                 country: {
                     elementType: 'input',
@@ -41,7 +55,11 @@ class ContactData extends Component {
                         type: 'text',
                         placeholder: 'your country'
                     },
-                    value: ''
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false
                 },
                 email: {
                     elementType: 'input',
@@ -49,7 +67,11 @@ class ContactData extends Component {
                         type: 'text',
                         placeholder: 'your e-mail'
                     },
-                    value: ''
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false
                 },
                 deliveryMethod: {
                     elementType: 'select',
@@ -64,6 +86,25 @@ class ContactData extends Component {
             }
         },
         loading: false
+    }
+
+    checkValidity(value, rules) {
+
+        let isValid = false;
+
+        if(rules.minLength){
+            isValid = value.trim() !== '';
+        }
+
+        if(rules.required){
+            isValid = value.trim() >= rules.minLength;
+        }
+
+        if(rules.maxLength){
+            isValid = value.trim() <= rules.maxLength;
+        }
+
+        return isValid;
     }
 
     orderHandler = (event) => {
@@ -120,6 +161,8 @@ class ContactData extends Component {
         //If we were working with the elementConfig, that is an element that is nested inside one of the elements of the orderForm, we would also
         //needed to use the spread operator to clone it, but since that's not the case, we only will clone one of the elements and access the value
         updatedFormElement.value = event.target.value;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        console.log(updatedFormElement)
         updatedOrderForm[inputIdentifier] = updatedFormElement;
         this.setState({orderForm: updatedOrderForm});
     }
