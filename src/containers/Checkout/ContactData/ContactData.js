@@ -105,6 +105,21 @@ class ContactData extends Component {
             });
     }
 
+    inputChangedHandler = (event, inputIdentifier) => {
+        // console.log(event.target.value);
+        //here we need to update the state immutably by creating clones of the actual state
+        //so far with the next line of code, this only creates a clone of the wrapper object (in this case the array of the outerForm)
+        //but it does not create a clone of the internal nested objects as the elementConfig or even the value, that's why we need to clone them all or
+        //just replace what we need to replace
+        const updatedOrderForm = { ...this.state.orderForm }
+        const updatedFormElement = { ...updatedOrderForm[inputIdentifier] }
+        //If we were working with the elementConfig, that is an element that is nested inside one of the elements of the orderForm, we would also
+        //needed to use the spread operator to clone it, but since that's not the case, we only will clone one of the elements and access the value
+        updatedFormElement.value = event.target.value;
+        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        this.setState({orderForm:updatedOrderForm});
+    }
+
     render() {
 
         const formElementsArray = [];
@@ -126,7 +141,10 @@ class ContactData extends Component {
                     elementType={formElement.config.elementType}
                     elementConfig={formElement.config.elementConfig}
                     value={formElement.config.value}
-                />
+                    //since here is needed to pass data as two way binding, there we need to get what is now stored
+                    //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
+                    //and is not updated because the state of the form is not updated
+                    changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
             })}
             <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
         </form>);
