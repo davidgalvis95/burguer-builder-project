@@ -189,6 +189,11 @@ class ContactData extends Component {
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
+                        //if the form element is not valid, then push this property so that a different style gets generate to that Input component
+                        invalid={!formElement.config.valid}
+                        //this property is set to know if a particular object should be validated, e.g the select Input component should not be validated,
+                        //because it has some default input that is ok. And since the select does not have the validation property, then we take advantage of that
+                        shouldValidate={formElement.config.validation}
                         //since here is needed to pass data as two way binding, there we need to get what is now stored
                         //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
                         //and is not updated because the state of the form is not updated
