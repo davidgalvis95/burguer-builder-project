@@ -87,6 +87,9 @@ class ContactData extends Component {
                         ]
                     },
                     value: '',
+                    //This validation object is added in order to correct some undefined properties when checking for the validation
+                    //due that this is the kind of object that is passed as rules in the checkValidity method
+                    validation: {},
                     //here we need to set this variable since we are validating each element in this form object, and if one of the properties
                     //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
                     valid: true
@@ -100,6 +103,11 @@ class ContactData extends Component {
     checkValidity(value, rules) {
 
         let isValid = true;
+
+        //This is the alternative way of solving the: cannot read property 'X' of undefined
+        // if(!rules){
+        //     return true;
+        // }
 
         if (rules.minLength) {
             isValid = value.trim() !== '' && isValid;
