@@ -86,7 +86,7 @@ class ContactData extends Component {
                             {value: 'cheapest', displayValue: 'Cheapest'}
                         ]
                     },
-                    value: '',
+                    value: 'fastest',
                     //This validation object is added in order to correct some undefined properties when checking for the validation
                     //due that this is the kind of object that is passed as rules in the checkValidity method
                     validation: {},
