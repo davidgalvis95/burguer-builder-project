@@ -86,10 +86,14 @@ class ContactData extends Component {
                             {value: 'cheapest', displayValue: 'Cheapest'}
                         ]
                     },
-                    value: ''
+                    value: '',
+                    //here we need to set this variable since we are validating each element in this form object, and if one of the properties
+                    //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
+                    valid: true
                 }
             }
         },
+        formIsValid: false,
         loading: false
     }
 
@@ -97,15 +101,15 @@ class ContactData extends Component {
 
         let isValid = true;
 
-        if(rules.minLength){
+        if (rules.minLength) {
             isValid = value.trim() !== '' && isValid;
         }
 
-        if(rules.required){
+        if (rules.required) {
             isValid = value.trim() >= rules.minLength && isValid;
         }
 
-        if(rules.maxLength){
+        if (rules.maxLength) {
             isValid = value.trim() <= rules.maxLength && isValid;
         }
 
@@ -123,7 +127,7 @@ class ContactData extends Component {
         //looping over every element of the orderForm and mapping the 'key' of orderForm, into a key of formData,
         // and the value of a given key into the value of formData
         const formData = {}
-        for (let formElementIdentifier in this.state.orderForm){
+        for (let formElementIdentifier in this.state.orderForm) {
             //using destructuring to build an object like
             //  {
             //      name: 'david'
@@ -170,7 +174,14 @@ class ContactData extends Component {
         updatedFormElement.touched = true;
         console.log(updatedFormElement)
         updatedOrderForm[inputIdentifier] = updatedFormElement;
-        this.setState({orderForm: updatedOrderForm});
+
+        let formIsValid = true;
+        for(let inputIdentifier in updatedOrderForm){
+            //here once one of the elements is false then all the formIsValid variable is set to false
+            formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+        }
+
+        this.setState({orderForm: updatedOrderForm, formIsValid:formIsValid});
     }
 
     render() {
@@ -207,7 +218,7 @@ class ContactData extends Component {
                         //and is not updated because the state of the form is not updated
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 })}
-                <Button btnType="Success">ORDER</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
             </form>);
 
         if (this.state.loading) {
