@@ -23,7 +23,8 @@ class ContactData extends Component {
                         minLength: 5,
                         maxLength: 10
                     },
-                    valid: false
+                    valid: false,
+                    touched: false
                 },
                 street: {
                     elementType: 'input',
@@ -35,7 +36,8 @@ class ContactData extends Component {
                     validation: {
                         required: true
                     },
-                    valid: false
+                    valid: false,
+                    touched: false
                 },
                 zipCode: {
                     elementType: 'input',
@@ -47,7 +49,8 @@ class ContactData extends Component {
                     validation: {
                         required: true
                     },
-                    valid: false
+                    valid: false,
+                    touched: false
                 },
                 country: {
                     elementType: 'input',
@@ -59,7 +62,8 @@ class ContactData extends Component {
                     validation: {
                         required: true
                     },
-                    valid: false
+                    valid: false,
+                    touched: false
                 },
                 email: {
                     elementType: 'input',
@@ -71,7 +75,8 @@ class ContactData extends Component {
                     validation: {
                         required: true
                     },
-                    valid: false
+                    valid: false,
+                    touched: false
                 },
                 deliveryMethod: {
                     elementType: 'select',
@@ -162,6 +167,7 @@ class ContactData extends Component {
         //needed to use the spread operator to clone it, but since that's not the case, we only will clone one of the elements and access the value
         updatedFormElement.value = event.target.value;
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.touched = true;
         console.log(updatedFormElement)
         updatedOrderForm[inputIdentifier] = updatedFormElement;
         this.setState({orderForm: updatedOrderForm});
@@ -194,6 +200,8 @@ class ContactData extends Component {
                         //this property is set to know if a particular object should be validated, e.g the select Input component should not be validated,
                         //because it has some default input that is ok. And since the select does not have the validation property, then we take advantage of that
                         shouldValidate={formElement.config.validation}
+                        //this is the property that let us know whether a single component has been initially modified
+                        touched={formElement.config.touched}
                         //since here is needed to pass data as two way binding, there we need to get what is now stored
                         //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
                         //and is not updated because the state of the form is not updated
