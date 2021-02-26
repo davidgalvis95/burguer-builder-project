@@ -30,3 +30,13 @@
     border: 1px solid red;
     background-color: #FDA49A;
 }
+
+.ValidationError {
+    color: red;
+    font: inherit;
+    box-sizing: border-box;
+    text-align: justify;
+    margin: 0;
+    padding: 0;
+    font-size: small;
+}

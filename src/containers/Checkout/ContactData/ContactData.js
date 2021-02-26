@@ -218,6 +218,7 @@ class ContactData extends Component {
                         shouldValidate={formElement.config.validation}
                         //this is the property that let us know whether a single component has been initially modified
                         touched={formElement.config.touched}
+                        errorMsg={'please enter a correct '.concat(formElement.id)}
                         //since here is needed to pass data as two way binding, there we need to get what is now stored
                         //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
                         //and is not updated because the state of the form is not updated
