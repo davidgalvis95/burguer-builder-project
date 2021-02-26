@@ -14,13 +14,13 @@ const input = (props) => {
 
     switch (props.elementType) {
         case ('input'):
-            inputElement = <input className={inputClasses}
+            inputElement = <input className={inputClasses.join(' ')}
                                   {...props.elementConfig}
                                   value={props.value}
                                   onChange={props.changed}/>
             break;
         case ('textarea'):
-            inputElement = <textarea className={inputClasses}
+            inputElement = <textarea className={inputClasses.join(' ')}
                                      {...props.elementConfig}
                                      value={props.value}
                                      onChange={props.changed}/>
@@ -29,7 +29,7 @@ const input = (props) => {
         case ('select'):
             inputElement = (
                 <select
-                    className={inputClasses}
+                    className={inputClasses.join(' ')}
                     //this value is different than the one that is in the option, this is a value that is set when the user selects something
                     value={props.value}
                     onChange={props.changed}>
@@ -44,7 +44,7 @@ const input = (props) => {
             )
             break;
         default:
-            inputElement = <input className={inputClasses}
+            inputElement = <input className={inputClasses.join(' ')}
                                   {...props.elementConfig}
                                   value={props.value}
                                   onChange={props.changed}/>
@@ -53,6 +53,7 @@ const input = (props) => {
     return (
         <div className={classes.Input}>
             <label className={classes.Label}>{props.label}</label>
+            {inputElement}
         </div>
     )
 }

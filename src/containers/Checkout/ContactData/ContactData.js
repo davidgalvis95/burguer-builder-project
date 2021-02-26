@@ -10,90 +10,88 @@ import Input from '../../../components/UI/Input/Input'
 class ContactData extends Component {
     state = {
         orderForm: {
-            customer: {
-                name: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'your name'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        minLength: 5,
-                        maxLength: 10
-                    },
-                    valid: false,
-                    touched: false
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'your name'
                 },
-                street: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'your street'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 10
                 },
-                zipCode: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'your zip code'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
+                valid: false,
+                touched: false
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'your street'
                 },
-                country: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'your country'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
+                value: '',
+                validation: {
+                    required: true
                 },
-                email: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'your e-mail'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
+                valid: false,
+                touched: false
+            },
+            zipCode: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'your zip code'
                 },
-                deliveryMethod: {
-                    elementType: 'select',
-                    elementConfig: {
-                        options: [
-                            {value: 'fastest', displayValue: 'Fastest'},
-                            {value: 'cheapest', displayValue: 'Cheapest'}
-                        ]
-                    },
-                    value: 'fastest',
-                    //This validation object is added in order to correct some undefined properties when checking for the validation
-                    //due that this is the kind of object that is passed as rules in the checkValidity method
-                    validation: {},
-                    //here we need to set this variable since we are validating each element in this form object, and if one of the properties
-                    //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
-                    valid: true
-                }
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            country: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'your country'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'your e-mail'
+                },
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            deliveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: 'fastest', displayValue: 'Fastest'},
+                        {value: 'cheapest', displayValue: 'Cheapest'}
+                    ]
+                },
+                value: 'fastest',
+                //This validation object is added in order to correct some undefined properties when checking for the validation
+                //due that this is the kind of object that is passed as rules in the checkValidity method
+                validation: {},
+                //here we need to set this variable since we are validating each element in this form object, and if one of the properties
+                //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
+                valid: true
             }
         },
         formIsValid: false,
@@ -108,17 +106,16 @@ class ContactData extends Component {
         // if(!rules){
         //     return true;
         // }
-
-        if (rules.minLength) {
+        if (rules.required) {
             isValid = value.trim() !== '' && isValid;
         }
 
-        if (rules.required) {
-            isValid = value.trim() >= rules.minLength && isValid;
+        if (rules.minLength) {
+            isValid = value.length >= rules.minLength && isValid;
         }
 
         if (rules.maxLength) {
-            isValid = value.trim() <= rules.maxLength && isValid;
+            isValid = value.length <= rules.maxLength && isValid;
         }
 
         return isValid;
@@ -184,12 +181,12 @@ class ContactData extends Component {
         updatedOrderForm[inputIdentifier] = updatedFormElement;
 
         let formIsValid = true;
-        for(let inputIdentifier in updatedOrderForm){
+        for (let inputIdentifier in updatedOrderForm) {
             //here once one of the elements is false then all the formIsValid variable is set to false
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
-        this.setState({orderForm: updatedOrderForm, formIsValid:formIsValid});
+        this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
     }
 
     render() {
