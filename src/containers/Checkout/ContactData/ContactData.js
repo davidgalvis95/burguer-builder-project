@@ -9,11 +9,6 @@ import Input from '../../../components/UI/Input/Input'
 
 class ContactData extends Component {
 
-    constructor(props) {
-        super(props);
-        //this.prevForm = null;
-    }
-
     state = {
         prevKey: '',
         prevOrderForm: {},
@@ -112,8 +107,6 @@ class ContactData extends Component {
                 //here we need to set this variable since we are validating each element in this form object, and if one of the properties
                 //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
                 valid: true,
-                //TODO check if here it is valid
-                abandoned: false
             }
         },
         formIsValid: false,
@@ -209,47 +202,12 @@ class ContactData extends Component {
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
-        this.setState(prevState => {
-            // console.log(prevState.orderForm);
-            // console.log(updatedOrderForm);
-            this.abandonedFieldHandler(prevState.orderForm, updatedOrderForm);
-            return{ orderForm: updatedOrderForm, formIsValid: formIsValid
-            }
-        });
+        this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
     }
 
-    abandonedFieldHandler = (outdatedForm, updatedForm) => {
-        // console.log(outdatedForm);
-        // console.log(updatedForm);
-
-        // for (let key in updatedForm){
-        //
-        // }
-        //
-        // outdatedForm.filter( element => console.log(element));
-    }
-
-    showSelected = (event) => {
+    abandonedFieldHandler = (event) => {
         this.setState(prevState => {
-            const actualKey = event.target.id;
-
-            let orderFormHasBeenTouched = false;
-            for (let identifier in prevState.orderForm) {
-                if(prevState.orderForm[identifier].touched){
-                    orderFormHasBeenTouched = true;
-                }
-            }
-
-            const updatedForm = {...this.state.orderForm}
-            if((prevState.prevKey !== actualKey) && orderFormHasBeenTouched) {
-                const updatedPrevElement = {...updatedForm[prevState.prevKey]};
-                const updatedActualElement = {...updatedForm[actualKey]};
-                updatedPrevElement.abandoned = true;
-                updatedActualElement.abandoned = false;
-                updatedForm[prevState.prevKey] = updatedPrevElement;
-                updatedForm[actualKey] = updatedActualElement;
-            }
-            console.log(updatedForm);
+            const {actualKey, updatedForm} = this.getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState);
 
             return{
                 orderForm: updatedForm,
@@ -258,19 +216,26 @@ class ContactData extends Component {
         });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // console.log(this.inputRef.current);
-        // console.log(prevState.orderForm);
-        // console.log(this.state.orderForm);
-        this.prevForm = prevState.orderForm;
-        // console.log(this.prevForm);
-    }
+    getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState) {
+        const actualKey = event.target.id;
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        // console.log(nextState.orderForm);
-        // console.log(this.state.orderForm);
+        let orderFormHasBeenTouched = false;
+        for (let identifier in prevState.orderForm) {
+            if (prevState.orderForm[identifier].touched) {
+                orderFormHasBeenTouched = true;
+            }
+        }
 
-        return true;
+        const updatedForm = {...this.state.orderForm}
+        if ((prevState.prevKey !== actualKey) && orderFormHasBeenTouched) {
+            const updatedPrevElement = {...updatedForm[prevState.prevKey]};
+            const updatedActualElement = {...updatedForm[actualKey]};
+            updatedPrevElement.abandoned = true;
+            updatedActualElement.abandoned = false;
+            updatedForm[prevState.prevKey] = updatedPrevElement;
+            updatedForm[actualKey] = updatedActualElement;
+        }
+        return {actualKey, updatedForm};
     }
 
     render() {
@@ -294,6 +259,7 @@ class ContactData extends Component {
                     return <Input
                         //as always when building an array of JSX the key is needed
                         key={formElement.id}
+                        elementId={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
@@ -310,8 +276,7 @@ class ContactData extends Component {
                         //and is not updated because the state of the form is not updated
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}
                         //ref={this.inputRef}
-                        elementId={formElement.id}
-                        selected={(event) => this.showSelected(event)}
+                        selected={(event) => this.abandonedFieldHandler(event)}
                         abandoned={formElement.config.abandoned}/>
                 })}
                 <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
