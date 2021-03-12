@@ -230,10 +230,8 @@ class ContactData extends Component {
         if ((prevState.prevKey !== actualKey) && orderFormHasBeenTouched) {
             const updatedPrevElement = {...updatedForm[prevState.prevKey]};
             const updatedActualElement = {...updatedForm[actualKey]};
-            updatedPrevElement.abandoned = true;
-            updatedActualElement.abandoned = false;
-            updatedForm[prevState.prevKey] = updatedPrevElement;
-            updatedForm[actualKey] = updatedActualElement;
+            [updatedPrevElement.abandoned, updatedActualElement.abandoned] = [true, false];
+            [updatedForm[prevState.prevKey], updatedForm[actualKey]] = [updatedPrevElement,updatedActualElement];
         }
         return {actualKey, updatedForm};
     }
