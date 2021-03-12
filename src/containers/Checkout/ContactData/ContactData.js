@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
@@ -8,7 +8,15 @@ import Input from '../../../components/UI/Input/Input'
 
 
 class ContactData extends Component {
+
+    constructor(props) {
+        super(props);
+        //this.prevForm = null;
+    }
+
     state = {
+        prevKey: '',
+        prevOrderForm: {},
         orderForm: {
             name: {
                 elementType: 'input',
@@ -23,7 +31,8 @@ class ContactData extends Component {
                     maxLength: 10
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                abandoned: false
             },
             street: {
                 elementType: 'input',
@@ -33,10 +42,12 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    minLength: 1
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                abandoned: false
             },
             zipCode: {
                 elementType: 'input',
@@ -46,10 +57,13 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    minLength: 5,
+                    maxLength: 6
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                abandoned: false
             },
             country: {
                 elementType: 'input',
@@ -59,10 +73,13 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    minLength: 3,
+                    maxLength: 20
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                abandoned: false
             },
             email: {
                 elementType: 'input',
@@ -72,10 +89,13 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    minLength: 5,
+                    maxLength: 40
                 },
                 valid: false,
-                touched: false
+                touched: false,
+                abandoned: false
             },
             deliveryMethod: {
                 elementType: 'select',
@@ -91,7 +111,9 @@ class ContactData extends Component {
                 validation: {},
                 //here we need to set this variable since we are validating each element in this form object, and if one of the properties
                 //in this case 'valid' is not defined, it will move it to undefined, which will not behave as the original false
-                valid: true
+                valid: true,
+                //TODO check if here it is valid
+                abandoned: false
             }
         },
         formIsValid: false,
@@ -164,6 +186,7 @@ class ContactData extends Component {
             });
     }
 
+
     inputChangedHandler = (event, inputIdentifier) => {
         // console.log(event.target.value);
         //here we need to update the state immutably by creating clones of the actual state
@@ -177,23 +200,86 @@ class ContactData extends Component {
         updatedFormElement.value = event.target.value;
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
-        console.log(updatedFormElement)
         updatedOrderForm[inputIdentifier] = updatedFormElement;
 
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
+            // console.log(updatedOrderForm[inputIdentifier]);
             //here once one of the elements is false then all the formIsValid variable is set to false
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
-        this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
+        this.setState(prevState => {
+            // console.log(prevState.orderForm);
+            // console.log(updatedOrderForm);
+            this.abandonedFieldHandler(prevState.orderForm, updatedOrderForm);
+            return{ orderForm: updatedOrderForm, formIsValid: formIsValid
+            }
+        });
+    }
+
+    abandonedFieldHandler = (outdatedForm, updatedForm) => {
+        // console.log(outdatedForm);
+        // console.log(updatedForm);
+
+        // for (let key in updatedForm){
+        //
+        // }
+        //
+        // outdatedForm.filter( element => console.log(element));
+    }
+
+    showSelected = (event) => {
+        this.setState(prevState => {
+            const actualKey = event.target.id;
+
+            let orderFormHasBeenTouched = false;
+            for (let identifier in prevState.orderForm) {
+                if(prevState.orderForm[identifier].touched){
+                    orderFormHasBeenTouched = true;
+                }
+            }
+
+            const updatedForm = {...this.state.orderForm}
+            if((prevState.prevKey !== actualKey) && orderFormHasBeenTouched) {
+                const updatedPrevElement = {...updatedForm[prevState.prevKey]};
+                const updatedActualElement = {...updatedForm[actualKey]};
+                updatedPrevElement.abandoned = true;
+                updatedActualElement.abandoned = false;
+                updatedForm[prevState.prevKey] = updatedPrevElement;
+                updatedForm[actualKey] = updatedActualElement;
+            }
+            console.log(updatedForm);
+
+            return{
+                orderForm: updatedForm,
+                prevKey: actualKey
+            }
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // console.log(this.inputRef.current);
+        // console.log(prevState.orderForm);
+        // console.log(this.state.orderForm);
+        this.prevForm = prevState.orderForm;
+        // console.log(this.prevForm);
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        // console.log(nextState.orderForm);
+        // console.log(this.state.orderForm);
+
+        return true;
     }
 
     render() {
 
+        // console.log('[render]')
         const formElementsArray = [];
         //converting the orderForm created in the state to an array to dynamically create input elements with the custom component from it
         for (let key in this.state.orderForm) {
+            // console.log(this.state.orderForm[key]);
             formElementsArray.push({
                 //This is the key of any object, in this case the names of the object e.g 'name', 'street'
                 id: key,
@@ -222,7 +308,11 @@ class ContactData extends Component {
                         //since here is needed to pass data as two way binding, there we need to get what is now stored
                         //in the value and show that there in the form in the DOM, because so far it's in the memory bu not the DOM
                         //and is not updated because the state of the form is not updated
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}
+                        //ref={this.inputRef}
+                        elementId={formElement.id}
+                        selected={(event) => this.showSelected(event)}
+                        abandoned={formElement.config.abandoned}/>
                 })}
                 <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
             </form>);
