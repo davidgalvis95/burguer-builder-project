@@ -33,12 +33,12 @@ class BurguerBuilder extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.json')
-            .then(response => {
-                this.setState({ingredients: response.data});
-            })
-            .catch(error => this.setState({error:error}))
-            // .catch(error => {})
+        // axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.json')
+        //     .then(response => {
+        //         this.setState({ingredients: response.data});
+        //     })
+        //     .catch(error => this.setState({error:error}))
+        //     // .catch(error => {})
     }
 
     updatePurchaseState(ingredients) {
