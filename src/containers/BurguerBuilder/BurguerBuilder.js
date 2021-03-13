@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
 import Aux from '../../hoc/Aux/Aux'
 import Burguer from '../../components/Burguer/Burguer'
@@ -8,6 +9,7 @@ import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import * as actionTypes from '../../store/actions'
 
 
 const INGREDIENT_PRICES = {
@@ -24,12 +26,11 @@ class BurguerBuilder extends Component {
     // }
 
     state = {
-        ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
         loading: false,
-        error:null
+        error: null
     }
 
     componentDidMount() {
@@ -55,11 +56,11 @@ class BurguerBuilder extends Component {
     }
 
     addIngredientHandler = (type) => {
-        const oldCount = this.state.ingredients[type];
+        const oldCount = this.props.ings[type];
         const updatedCount = oldCount + 1;
         //here we use the spread operator, since we have to edit the state in an immutable way, since arrays and objects are reference types
         //A new constant is generated
-        const updatedIngredients = {...this.state.ingredients};
+        const updatedIngredients = {...this.props.ings};
         updatedIngredients[type] = updatedCount;
         const priceAddition = INGREDIENT_PRICES[type];
         const oldPrice = this.state.totalPrice;
@@ -76,7 +77,7 @@ class BurguerBuilder extends Component {
         const updatedCount = oldCount - 1;
         //here we use the spread operator, since we have to edit the state in an immutable way, since arrays and objects are reference types
         //A new constant is generated
-        const updatedIngredients = {...this.state.ingredients};
+        const updatedIngredients = {...this.props.ings};
         updatedIngredients[type] = updatedCount;
         const priceDeduction = INGREDIENT_PRICES[type];
         const oldPrice = this.state.totalPrice;
@@ -99,8 +100,8 @@ class BurguerBuilder extends Component {
         //this is an array made to pass the properties
         const queryParams = [];
         //iterating over each ingredient to build the query search params
-        for(let i in this.state.ingredients){
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
+        for (let i in this.props.ings) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ings[i]))
         }
         queryParams.push('price=' + this.state.totalPrice);
         //Joining all the query params in a single string
@@ -115,7 +116,7 @@ class BurguerBuilder extends Component {
     render() {
         //here we seize the fact that everytime something is rendered, this is again checked to see if the button needs to be disabled
         //here we get the ingredients from the state in an immutable way
-        const disabledInfo = {...this.state.ingredients};
+        const disabledInfo = {...this.props.ings};
         //if the ingredient for that key has a count of <= 0 then is disabled, otherwise it's not
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0;
@@ -123,18 +124,19 @@ class BurguerBuilder extends Component {
         let orderSummary = null;
 
         console.log(this.state.error);
-        let burguer = this.state.error ? <h3 style={{'textAlign':'center'}}>Ingredients could not be loaded</h3>:<Spinner/>;
+        let burguer = this.state.error ? <h3 style={{'textAlign': 'center'}}>Ingredients could not be loaded</h3> :
+            <Spinner/>;
 
         //This was required because initially the state of the ingredients is null with these changes, and after the component gets mounted it will
         // go and fetch the data from firebase, so, that's why this condition is needed, here in this condition we add all the components that are dependant on if
         //there are ingredients or not
-        if(this.state.ingredients) {
+        if (this.props.ings) {
             burguer = (
                 <Aux>
-                    <Burguer ingredients={this.state.ingredients}/>
+                    <Burguer ingredients={this.props.ings}/>
                     <BuildControls
-                        ingredientAdded={this.addIngredientHandler}
-                        ingredientRemoved={this.removeIngredientHandler}
+                        ingredientAdded={this.props.onIngredientAdded}
+                        ingredientRemoved={this.props.onIngredientDeleted}
                         //here we pass the entire object
                         disabled={disabledInfo}
                         purchasable={this.state.purchasable}
@@ -145,7 +147,7 @@ class BurguerBuilder extends Component {
             );
             //if the ingredients are set, we also will set the orderSummary
             orderSummary = <OrderSummary
-                ingredients={this.state.ingredients}
+                ingredients={this.props.ings}
                 purchaseCancelled={this.purchaseCanceledHandler}
                 purchaseContinued={this.purchaseContinuedHandler}
                 price={this.state.totalPrice}/>;
@@ -170,5 +172,18 @@ class BurguerBuilder extends Component {
     }
 }
 
-export default withErrorHandler(BurguerBuilder, axios);
+const mapStateToProps = state => {
+    return {
+        ings: state.ingredients
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName}),
+        onIngredientDeleted: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (withErrorHandler(BurguerBuilder, axios));
 // export default BurguerBuilder;
