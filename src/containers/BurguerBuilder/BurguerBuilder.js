@@ -63,7 +63,7 @@ class BurguerBuilder extends Component {
         const updatedIngredients = {...this.props.ings};
         updatedIngredients[type] = updatedCount;
         const priceAddition = INGREDIENT_PRICES[type];
-        const oldPrice = this.state.totalPrice;
+        const oldPrice = this.props.price;
         const newPrice = oldPrice + priceAddition;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
         this.updatePurchaseState(updatedIngredients);
@@ -80,7 +80,7 @@ class BurguerBuilder extends Component {
         const updatedIngredients = {...this.props.ings};
         updatedIngredients[type] = updatedCount;
         const priceDeduction = INGREDIENT_PRICES[type];
-        const oldPrice = this.state.totalPrice;
+        const oldPrice = this.props.price;
         const newPrice = oldPrice - priceDeduction;
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
         this.updatePurchaseState(updatedIngredients);
@@ -103,7 +103,7 @@ class BurguerBuilder extends Component {
         for (let i in this.props.ings) {
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ings[i]))
         }
-        queryParams.push('price=' + this.state.totalPrice);
+        queryParams.push('price=' + this.props.price);
         //Joining all the query params in a single string
         const queryString = queryParams.join('&');
         this.props.history.push({
@@ -141,7 +141,7 @@ class BurguerBuilder extends Component {
                         disabled={disabledInfo}
                         purchasable={this.state.purchasable}
                         ordered={this.purchaseHandler}
-                        price={this.state.totalPrice}
+                        price={this.props.price}
                     />
                 </Aux>
             );
@@ -150,7 +150,7 @@ class BurguerBuilder extends Component {
                 ingredients={this.props.ings}
                 purchaseCancelled={this.purchaseCanceledHandler}
                 purchaseContinued={this.purchaseContinuedHandler}
-                price={this.state.totalPrice}/>;
+                price={this.props.price}/>;
         }
 
         //if the state is loading, then show the spinner
@@ -174,7 +174,8 @@ class BurguerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients
+        ings: state.ingredients,
+        price: state.totalPrice
     }
 }
 
