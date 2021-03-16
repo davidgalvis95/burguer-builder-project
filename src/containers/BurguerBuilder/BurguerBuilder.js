@@ -95,19 +95,8 @@ class BurguerBuilder extends Component {
     }
 
     purchaseContinuedHandler = () => {
-        //this is an array made to pass the properties
-        const queryParams = [];
-        //iterating over each ingredient to build the query search params
-        for (let i in this.props.ings) {
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.props.ings[i]))
-        }
-        queryParams.push('price=' + this.props.price);
-        //Joining all the query params in a single string
-        const queryString = queryParams.join('&');
-        this.props.history.push({
-            pathname: '/checkout',
-            search: '?' + queryString
-        });
+        //the last logic is no longer needed since ingredients will be queried through Redux in the Checkout component
+        this.props.history.push('/checkout');
     }
 
 
