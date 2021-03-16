@@ -135,6 +135,10 @@ class BurguerBuilder extends Component {
                 <Aux>
                     <Burguer ingredients={this.props.ings}/>
                     <BuildControls
+                        //Here we can realize a feature in the onIngredientAdded and onIngredientRemoved, that is passed as a reference from the BurguerBuilder,
+                        // that they are not passing the property needed in the props passed from redux, this is because the property that is called from BuildControls already is
+                        // passing this method from this component following this format {() => onIngredientRemoved(argument)} , so, it implies that the function onIngredientRemoved is already
+                        // being called from the BuildControls passing the argument, because the ingredientRemoved calls this.props.onIngredientDeleted respectively
                         ingredientAdded={this.props.onIngredientAdded}
                         ingredientRemoved={this.props.onIngredientDeleted}
                         //here we pass the entire object
