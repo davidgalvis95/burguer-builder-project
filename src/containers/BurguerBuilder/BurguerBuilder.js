@@ -27,8 +27,6 @@ class BurguerBuilder extends Component {
 
     state = {
         purchasing: false,
-        loading: false,
-        error: null
     }
 
     componentDidMount() {
@@ -146,9 +144,9 @@ class BurguerBuilder extends Component {
 
         //if the state is loading, then show the spinner
         //set after checking for ingredients, because this happens after
-        if (this.state.loading) {
-            orderSummary = <Spinner/>;
-        }
+        // if (this.state.loading) {
+        //     orderSummary = <Spinner/>;
+        // }
 
         return (
             <Aux>
