@@ -9,7 +9,7 @@ import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import * as actionTypes from '../../store/actions/actionTypes'
+import * as burguerBuilderActions from '../../store/actions/index'
 
 
 const INGREDIENT_PRICES = {
@@ -172,8 +172,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName}),
-        onIngredientDeleted: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName})
+        onIngredientAdded: (ingName) => dispatch(burguerBuilderActions.addIngredient(ingName)),
+        onIngredientDeleted: (ingName) => dispatch(burguerBuilderActions.removeIngredient(ingName))
     }
 }
 
