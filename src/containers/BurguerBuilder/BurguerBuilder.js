@@ -30,12 +30,8 @@ class BurguerBuilder extends Component {
     }
 
     componentDidMount() {
-        // axios.get('https://react-my-burguer-571ec-default-rtdb.firebaseio.com/ingredients.json')
-        //     .then(response => {
-        //         this.setState({ingredients: response.data});
-        //     })
-        //     .catch(error => this.setState({error:error}))
-        //     // .catch(error => {})
+        console.log(this.props)
+        this.props.onIngredientAdded();
     }
 
     updatePurchaseState(ingredients) {
@@ -108,8 +104,8 @@ class BurguerBuilder extends Component {
         }
         let orderSummary = null;
 
-        console.log(this.state.error);
-        let burguer = this.state.error ? <h3 style={{'textAlign': 'center'}}>Ingredients could not be loaded</h3> :
+        console.log(this.props.error);
+        let burguer = this.props.error ? <h3 style={{'textAlign': 'center'}}>Ingredients could not be loaded</h3> :
             <Spinner/>;
 
         //This was required because initially the state of the ingredients is null with these changes, and after the component gets mounted it will
@@ -164,14 +160,16 @@ class BurguerBuilder extends Component {
 const mapStateToProps = state => {
     return {
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(burguerBuilderActions.addIngredient(ingName)),
-        onIngredientDeleted: (ingName) => dispatch(burguerBuilderActions.removeIngredient(ingName))
+        onIngredientDeleted: (ingName) => dispatch(burguerBuilderActions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(burguerBuilderActions.initIngredients())
     }
 }
 
