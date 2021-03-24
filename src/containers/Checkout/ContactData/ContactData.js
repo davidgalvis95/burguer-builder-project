@@ -6,6 +6,8 @@ import classes from './ContactData.module.css';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index'
 
 
 class ContactData extends Component {
@@ -143,7 +145,7 @@ class ContactData extends Component {
 
         // creating the object to sent to the 'backend'
         // when starting to send the request, the state is set to loading
-        this.setState({loading: true});
+        // this.setState({loading: true});
 
         //looping over every element of the orderForm and mapping the 'key' of orderForm, into a key of formData,
         // and the value of a given key into the value of formData
@@ -163,21 +165,7 @@ class ContactData extends Component {
             orderData: formData
         }
 
-        //sending the request to the api
-        //until we get a response or an error, the state is set no not loading
-
-        //This is just a test url to test the error handler that wraps this component
-        // axios.post('/orders.jso', order)
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         console.log(response);
-        //         this.setState({loading: false});
-        //         this.props.history.push('/');
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //         this.setState({loading: false});
-        //     });
+        this.props.onOrderBurguer(order);
     }
 
 
@@ -300,4 +288,11 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps) (ContactData);
+const mapDispatchToProps = dispatch =>{
+    return{
+        onOrderBurguer: (order) => dispatch(actions.purchaseBuguerStart(order))
+    }
+}
+
+//This is done in order to handle the axios errors in the error handler created
+export default connect(mapStateToProps) (withErrorHandler(ContactData, axios));
