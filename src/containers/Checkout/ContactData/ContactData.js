@@ -103,6 +103,7 @@ class ContactData extends Component {
                         {value: 'cheapest', displayValue: 'Cheapest'}
                     ]
                 },
+                //This needs to be set as default in order to send the order
                 value: 'fastest',
                 //This validation object is added in order to correct some undefined properties when checking for the validation
                 //due that this is the kind of object that is passed as rules in the checkValidity method
@@ -282,9 +283,9 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice,
-        loading: state.loading
+        ings: state.burguerBuilder.ingredients,
+        price: state.burguerBuilder.totalPrice,
+        loading: state.order.loading
     }
 }
 

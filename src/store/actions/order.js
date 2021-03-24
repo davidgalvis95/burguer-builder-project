@@ -30,7 +30,7 @@ export const purchaseBuguer = (orderData) => {
         axios.post('/orders.json', orderData)
             .then(response => {
                 console.log(response);
-                dispatch(purchaseBurguerSuccess(response.data, orderData))
+                dispatch(purchaseBurguerSuccess(response.data.name, orderData))
                 // this.props.history.push('/');
             })
             .catch(error => {

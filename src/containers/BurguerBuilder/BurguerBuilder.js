@@ -159,9 +159,9 @@ class BurguerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice,
-        error: state.error
+        ings: state.burguerBuilder.ingredients,
+        price: state.burguerBuilder.totalPrice,
+        error: state.burguerBuilder.error
     }
 }
 
@@ -169,6 +169,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(burguerBuilderActions.addIngredient(ingName)),
         onIngredientDeleted: (ingName) => dispatch(burguerBuilderActions.removeIngredient(ingName)),
+        //TODO: look why this is not being called
         onInitIngredients: () => dispatch(burguerBuilderActions.initIngredients())
     }
 }
