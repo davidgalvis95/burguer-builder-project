@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import {updateObject} from "../utility";
 
 const initialState = {
     ingredients: null,
@@ -16,35 +17,29 @@ const INGREDIENT_PRICES = {
 const burguerBuilder = (state = initialState, action) => {
     switch (action.type){
         case actionTypes.ADD_INGREDIENT:
-            return {
-                ...state,
-                ingredients: {
-                    ...state.ingredients,
-                    [action.ingredientName]: state.ingredients[action.ingredientName] + 1
-                },
+            const updatedAddIng = { [action.ingredientName]: state.ingredients[action.ingredientName] + 1 };
+            const updatedAddIngs = updateObject(state.ingredients, updatedAddIng);
+            const updatedAddState = {
+                ingredients: updatedAddIngs,
                 totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
-            };
+            }
+            return updateObject(state, updatedAddState)
         case actionTypes.REMOVE_INGREDIENT:
-            return {
-                ...state,
-                ingredients: {
-                    ...state.ingredients,
-                    [action.ingredientName]: state.ingredients[action.ingredientName] - 1
-                },
-                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
-            };
+            const updatedRemoveIng = { [action.ingredientName]: state.ingredients[action.ingredientName] - 1 };
+            const updatedRemoveIngs = updateObject(state.ingredients, updatedRemoveIng);
+            const updatedRemoveState = {
+                ingredients: updatedRemoveIngs,
+                totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+            }
+            return updateObject(state, updatedRemoveState)
         case actionTypes.SET_INGREDIENTS:
-            return {
-                ...state,
+            return updateObject(state, {
                 ingredients: action.ingredients,
                 totalPrice: 4,
                 error: false
-            }
+            })
         case actionTypes.FETCH_INGREDIENTS_FAILED:
-            return {
-                ...state,
-                error: true
-            }
+            return updateObject(state, { error: true });
         default:
             return state;
     }
