@@ -9,7 +9,7 @@ import OrderSummary from '../../components/Burguer/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import * as burguerBuilderActions from '../../store/actions/index'
+import * as actions from '../../store/actions/index'
 
 
 const INGREDIENT_PRICES = {
@@ -89,6 +89,7 @@ class BurguerBuilder extends Component {
     }
 
     purchaseContinuedHandler = () => {
+        this.props.onInitPurchase();
         //the last logic is no longer needed since ingredients will be queried through Redux in the Checkout component
         this.props.history.push('/checkout');
     }
@@ -167,10 +168,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingName) => dispatch(burguerBuilderActions.addIngredient(ingName)),
-        onIngredientDeleted: (ingName) => dispatch(burguerBuilderActions.removeIngredient(ingName)),
+        onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientDeleted: (ingName) => dispatch(actions.removeIngredient(ingName)),
         //TODO: look why this is not being called
-        onInitIngredients: () => dispatch(burguerBuilderActions.initIngredients())
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 
