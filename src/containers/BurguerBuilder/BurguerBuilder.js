@@ -31,7 +31,7 @@ class BurguerBuilder extends Component {
 
     componentDidMount() {
         console.log(this.props)
-        this.props.onIngredientAdded();
+        this.props.onInitIngredients();
     }
 
     updatePurchaseState(ingredients) {
