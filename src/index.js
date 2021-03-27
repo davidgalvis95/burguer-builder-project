@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
     order: order
 })
 
-const store = createStore(burguerBuilder, composeEnhancers(applyMiddleware(thunk)));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 ReactDOM.render(
   <React.StrictMode>
