@@ -10,6 +10,7 @@ const navigationItems = (props) => (
         {/*We no longer need this active since the active context is now set in the NavLink component*/}
         <NavigationItem link="/" exact>Burguer builder</NavigationItem>
         <NavigationItem link="/orders">Orders</NavigationItem>
+        <NavigationItem link="/auth">Authenticate</NavigationItem>
     </ul>
 );
 

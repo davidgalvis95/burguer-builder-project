@@ -116,6 +116,19 @@ class ContactData extends Component {
         formIsValid: false,
     }
 
+    inputchangedHandler = (event, controlName) => {
+        const updatedControls = {
+            ...this.state.controls,
+            [controlName]: {
+                ...this.state.controls[controlName],
+                value: event.target.value,
+                valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+                touched:true
+            }
+        };
+        this.setState({controls: updatedControls});
+    }
+
     checkValidity(value, rules) {
 
         let isValid = true;
@@ -135,6 +148,7 @@ class ContactData extends Component {
         if (rules.maxLength) {
             isValid = value.length <= rules.maxLength && isValid;
         }
+        //TODO add the email validity here
 
         return isValid;
     }
