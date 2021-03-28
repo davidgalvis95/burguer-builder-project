@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders'
-import {dispatch} from "jest-circus/build/state";
 
 export const purchaseBurguerSuccess = (id, orderData) => {
     return {

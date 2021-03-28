@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
-import classes from 'Auth.module.css'
+import classes from './Auth.module.css'
 import * as actions from '../../store/actions/index'
 
 
@@ -67,7 +67,7 @@ class Auth extends Component {
         return isValid;
     }
 
-    inputchangedHandler = (event, controlName) => {
+    inputChangedHandler = (event, controlName) => {
         const updatedControls = {
             ...this.state.controls,
             [controlName]: {
@@ -94,6 +94,7 @@ class Auth extends Component {
             })
         };
 
+        //TODO implement the selected and abandoned handlers
         const form = formElementsArray.map(formElement => (
             <Input key={formElement.id}
                    elementId={formElement.id}
@@ -105,7 +106,7 @@ class Auth extends Component {
                    touched={formElement.config.touched}
                    errorMsg={'please enter a correct '.concat(formElement.id)}
                    changed={(event) => this.inputChangedHandler(event, formElement.id)}
-                   selected={(event) => this.abandonedFieldHandler(event)}
+                   selected=""//(event) => this.abandonedFieldHandler(event)}
                    abandoned={formElement.config.abandoned}/>
         ))
 
