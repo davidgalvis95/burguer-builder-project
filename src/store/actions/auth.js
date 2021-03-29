@@ -1,4 +1,5 @@
-import * as actionTypes from './actionTypes'
+import * as actionTypes from './actionTypes';
+import axios from "axios";
 
 export const authStart = () => {
     return {
@@ -22,6 +23,22 @@ export const authFail = (error) => {
 
 export const auth = (email, password) => {
     return dispatch => {
-        dispatch(authStart())
+        dispatch(authStart());
+        const authData = {
+            email: email,
+            password: password,
+            returnSecureToken: true
+
+        }
+        //TODO find the way to use the API_KEY
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]', authData)
+            .then(response => {
+                console.log(response);
+                dispatch(authSuccess());
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(authFail(err));
+            })
     }
 }
