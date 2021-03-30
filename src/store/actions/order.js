@@ -22,12 +22,12 @@ export const purchaseBurguerFail = (error) => {
     };
 }
 
-export const purchaseBuguer = (orderData) => {
+export const purchaseBuguer = (orderData, token) => {
     return dispatch => {
         //we do this using the dispatch because we want the purchaseBurguerStart to reach the reducer so that we can perform
         // action with the actionTypes.PURCHASE_BURGUER_START
         dispatch(purchaseBurguerStart())
-        axios.post('/orders.json', orderData)
+        axios.post('/orders.json?auth=' + token, orderData)
             .then(response => {
                 console.log(response);
                 dispatch(purchaseBurguerSuccess(response.data.name, orderData))
@@ -66,10 +66,11 @@ export const fetchOrdersStart = () => {
     }
 }
 
-export const fetchOrders = () => {
+export const fetchOrders = (token) => {
+    //we could use the getState here but
     return dispatch => {
         dispatch(fetchOrdersStart())
-        axios.get('/orders.json')
+        axios.get('/orders.json?auth=' + token)
             .then(res => {
             console.log(res.data);
             const fetchedOrders = [];
