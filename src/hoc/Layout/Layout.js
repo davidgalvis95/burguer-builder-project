@@ -1,9 +1,10 @@
 import React, {Component} from "react";
+import {connect} from 'react-redux';
 
 import Aux from '../Aux/Aux';
 import classes from './Layout.module.css'
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar'
-import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer'
+import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 
 //We decided to convert this component into a class based one, because actually we want to trigger the BackDrop and SideDrawer
 //Using the MENU div that is residing in the Toolbar component. We could convert the SideDrawer component into a stateful one and toggle the SideDrawer and
@@ -29,8 +30,11 @@ class Layout extends Component {
     render() {
         return (
             <Aux>
-                <Toolbar showSideDrawer={this.toggleDrawerClosedHandler}/>
+                <Toolbar
+                    isAuth={this.props.isAuthenticated}
+                    showSideDrawer={this.toggleDrawerClosedHandler}/>
                 <SideDrawer
+                    isAuth={this.props.isAuthenticated}
                     closed={this.closeDrawerClosedHandler}
                     open={this.state.showSideDrawer}
                 />
@@ -42,4 +46,10 @@ class Layout extends Component {
     }
 }
 
-export default Layout;
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    }
+}
+
+export default connect(mapStateToProps) (Layout);
