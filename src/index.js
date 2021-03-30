@@ -10,13 +10,15 @@ import thunk from "redux-thunk";
 
 import burguerBuilder from './store/reducers/burguerBuilder';
 import order from "./store/reducers/order";
+import authReducer from "./store/reducers/auth";
 
 //here we need the basic setup because
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     burguerBuilder: burguerBuilder,
-    order: order
+    order: order,
+    auth: authReducer
 })
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));

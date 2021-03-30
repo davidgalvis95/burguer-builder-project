@@ -7,10 +7,13 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (authData) => {
+//This piece of the code will be refactored so that it gets the userId and token
+// instead of the whole firebase object response
+export const authSuccess = (token, userId) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        authData: authData
+        idToken: token,
+        userId: userId
     }
 }
 
@@ -41,7 +44,8 @@ export const auth = (email, password, isSignUp) => {
         axios.post(url, authData)
             .then(response => {
                 console.log(response);
-                dispatch(authSuccess());
+                //These are the fields we receive from firebase when doing the needed modifications
+                dispatch(authSuccess(response.data.idToken, response.data.localId));
             })
             .catch(err => {
                 console.log(err);
