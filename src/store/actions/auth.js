@@ -24,6 +24,20 @@ export const authFail = (error) => {
     }
 }
 
+export const logout = () => {
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    };
+}
+
+export const checkAuthTimeout = (expirationTime) => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logout())
+        },expirationTime * 1000)
+    };
+}
+
 export const auth = (email, password, isSignUp) => {
     return dispatch => {
         dispatch(authStart());
@@ -46,6 +60,8 @@ export const auth = (email, password, isSignUp) => {
                 console.log(response);
                 //These are the fields we receive from firebase when doing the needed modifications
                 dispatch(authSuccess(response.data.idToken, response.data.localId));
+                //this is the object that holds the expiration time of the session
+                dispatch(checkAuthTimeout(response.data.expiresIn));
             })
             .catch(err => {
                 console.log(err);
