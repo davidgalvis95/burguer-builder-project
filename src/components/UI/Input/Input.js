@@ -5,7 +5,7 @@ import classes from './Input.module.css';
 //This is a custom input component that will replace the default inputs that are created when those are used in the Checkout component
 const input = (props) => {
 
-    let inputElement = null;
+    let inputElement;
     const inputClasses = [classes.InputElement];
 
     let validationError = null;

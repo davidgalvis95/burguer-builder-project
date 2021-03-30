@@ -10,6 +10,8 @@ import Spinner from '../../components/UI/Spinner/Spinner'
 class Auth extends Component {
 
     state = {
+        prevKey: '',
+        prevOrderForm: {},
         controls: {
             email: {
                 elementType: 'input',
@@ -22,8 +24,7 @@ class Auth extends Component {
                     required: true,
                     minLength: 5,
                     maxLength: 10,
-                    //TODO add this validation to the object and in contactData
-                    //isEmail: true
+                    isEmail: true
                 },
                 valid: false,
                 touched: false,
@@ -64,7 +65,12 @@ class Auth extends Component {
         if (rules.maxLength) {
             isValid = value.length <= rules.maxLength && isValid;
         }
-        //TODO add the email validity here
+
+        if(rules.isEmail){
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            isValid = emailRegex.test(String(value).toLowerCase());
+
+        }
 
         return isValid;
     }
@@ -76,7 +82,7 @@ class Auth extends Component {
                 ...this.state.controls[controlName],
                 value: event.target.value,
                 valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
-                touched:true
+                touched: true
             }
         };
         this.setState({controls: updatedControls});
@@ -93,6 +99,40 @@ class Auth extends Component {
         })
     }
 
+    //TODO extract this code and some other methods in a separate common component
+    selectAndAbandonedFieldHandler = (event) => {
+
+        this.setState(prevState => {
+            const {actualKey, updatedAuthForm} = this.getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState);
+
+            return{
+                controls: updatedAuthForm,
+                prevKey: actualKey
+            }
+        });
+    }
+
+    getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState) {
+        const actualKey = event.target.id;
+
+        console.log(actualKey);
+        let authFormHasBeenTouched = false;
+        for (let identifier in prevState.controls) {
+            if (prevState.controls[identifier].touched) {
+                authFormHasBeenTouched = true;
+            }
+        }
+
+        const updatedAuthForm = {...this.state.controls};
+        if ((prevState.prevKey !== actualKey) && authFormHasBeenTouched) {
+            const updatedPrevElement = {...updatedAuthForm[prevState.prevKey]};
+            const updatedActualElement = {...updatedAuthForm[actualKey]};
+            [updatedPrevElement.abandoned, updatedActualElement.abandoned] = [true, false];
+            [updatedAuthForm[prevState.prevKey], updatedAuthForm[actualKey]] = [updatedPrevElement,updatedActualElement];
+        }
+        return {actualKey, updatedAuthForm};
+    }
+
     render() {
         const formElementsArray = [];
         for (let key in this.state.controls) {
@@ -102,21 +142,24 @@ class Auth extends Component {
             })
         }
 
-        //TODO implement the selected and abandoned handlers
-        let form = formElementsArray.map(formElement => (
-            <Input key={formElement.id}
+        console.log(formElementsArray);
+
+        let form = formElementsArray.map(formElement => {
+
+            console.log(formElement.config.abandoned)
+            return <Input key={formElement.id}
                    elementId={formElement.id}
                    elementType={formElement.config.elementType}
                    elementConfig={formElement.config.elementConfig}
                    value={formElement.config.value}
                    invalid={!formElement.config.valid}
-                   shouldValidate={formElement.config.validation}
+                   shouldValidate={formElement.config.validation !== undefined}
                    touched={formElement.config.touched}
                    errorMsg={'please enter a correct '.concat(formElement.id)}
                    changed={(event) => this.inputChangedHandler(event, formElement.id)}
-                   selected=""//(event) => this.abandonedFieldHandler(event)}
+                   selected={(event) => this.selectAndAbandonedFieldHandler(event)}
                    abandoned={formElement.config.abandoned}/>
-        ));
+        });
 
         if(this.props.loading){
             form = <Spinner/>;
@@ -135,11 +178,11 @@ class Auth extends Component {
                 {errorMessage}
                 <form onSubmit={this.submitHandler}>
                     {form}
-                    <Button type="Success">SUBMIT</Button>
+                    <Button btnType="Success">SUBMIT</Button>
                 </form>
                 <Button
-                    clicked={this.switchModeHandler()}
-                    type="Danger">SWITCH TO {this.state.isSignUp ?"SIGNIN": "SIGNUP"}</Button>
+                    clicked={this.switchModeHandler}
+                    btnType="Danger">SWITCH TO {this.state.isSignUp ?"SIGNIN": "SIGNUP"}</Button>
             </div>
         )
     }

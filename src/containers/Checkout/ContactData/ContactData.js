@@ -89,7 +89,8 @@ class ContactData extends Component {
                 validation: {
                     required: true,
                     minLength: 5,
-                    maxLength: 40
+                    maxLength: 40,
+                    isEmail: true
                 },
                 valid: false,
                 touched: false,
@@ -135,7 +136,12 @@ class ContactData extends Component {
         if (rules.maxLength) {
             isValid = value.length <= rules.maxLength && isValid;
         }
-        //TODO add the email validity here
+
+        if(rules.isEmail){
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            isValid = emailRegex.test(String(value).toLowerCase());
+
+        }
 
         return isValid;
     }
@@ -195,12 +201,13 @@ class ContactData extends Component {
         this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
     }
 
-    abandonedFieldHandler = (event) => {
+    //TODO extract this code and some other methods in a separate common component
+    selectAndAbandonedFieldHandler = (event) => {
         this.setState(prevState => {
-            const {actualKey, updatedForm} = this.getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState);
+            const {actualKey, updatedOrderForm} = this.getFormAndActualKeyIfFieldHasBeenAbandoned(event, prevState);
 
             return{
-                orderForm: updatedForm,
+                orderForm: updatedOrderForm,
                 prevKey: actualKey
             }
         });
@@ -216,14 +223,14 @@ class ContactData extends Component {
             }
         }
 
-        const updatedForm = {...this.state.orderForm}
+        const updatedOrderForm = {...this.state.orderForm}
         if ((prevState.prevKey !== actualKey) && orderFormHasBeenTouched) {
-            const updatedPrevElement = {...updatedForm[prevState.prevKey]};
-            const updatedActualElement = {...updatedForm[actualKey]};
+            const updatedPrevElement = {...updatedOrderForm[prevState.prevKey]};
+            const updatedActualElement = {...updatedOrderForm[actualKey]};
             [updatedPrevElement.abandoned, updatedActualElement.abandoned] = [true, false];
-            [updatedForm[prevState.prevKey], updatedForm[actualKey]] = [updatedPrevElement,updatedActualElement];
+            [updatedOrderForm[prevState.prevKey], updatedOrderForm[actualKey]] = [updatedPrevElement,updatedActualElement];
         }
-        return {actualKey, updatedForm};
+        return {actualKey, updatedOrderForm};
     }
 
     render() {
@@ -255,7 +262,8 @@ class ContactData extends Component {
                         invalid={!formElement.config.valid}
                         //this property is set to know if a particular object should be validated, e.g the select Input component should not be validated,
                         //because it has some default input that is ok. And since the select does not have the validation property, then we take advantage of that
-                        shouldValidate={formElement.config.validation}
+                        //changed for readability in Input component
+                        shouldValidate={formElement.config.validation !== undefined}
                         //this is the property that let us know whether a single component has been initially modified
                         touched={formElement.config.touched}
                         errorMsg={'please enter a correct '.concat(formElement.id)}
@@ -264,7 +272,7 @@ class ContactData extends Component {
                         //and is not updated because the state of the form is not updated
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}
                         //ref={this.inputRef}
-                        selected={(event) => this.abandonedFieldHandler(event)}
+                        selected={(event) => this.selectAndAbandonedFieldHandler(event)}
                         abandoned={formElement.config.abandoned}/>
                 })}
                 <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
