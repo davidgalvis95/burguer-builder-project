@@ -4,6 +4,7 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import classes from './Auth.module.css'
 import * as actions from '../../store/actions/index'
+import Spinner from '../../components/UI/Spinner/Spinner'
 
 
 class Auth extends Component {
@@ -102,7 +103,7 @@ class Auth extends Component {
         }
 
         //TODO implement the selected and abandoned handlers
-        const form = formElementsArray.map(formElement => (
+        let form = formElementsArray.map(formElement => (
             <Input key={formElement.id}
                    elementId={formElement.id}
                    elementType={formElement.config.elementType}
@@ -115,10 +116,23 @@ class Auth extends Component {
                    changed={(event) => this.inputChangedHandler(event, formElement.id)}
                    selected=""//(event) => this.abandonedFieldHandler(event)}
                    abandoned={formElement.config.abandoned}/>
-        ))
+        ));
+
+        if(this.props.loading){
+            form = <Spinner/>;
+        }
+
+        let errorMessage = null;
+
+        if(this.props.error){
+            //This is mapped this way because that is the way in which we get the message from the error in firebase
+            //we can change this depending on the backend stuff we are connecting to
+            errorMessage = ( <p>{this.props.error.message}</p>)
+        };
 
         return(
             <div className={classes.Auth}>
+                {errorMessage}
                 <form onSubmit={this.submitHandler}>
                     {form}
                     <Button type="Success">SUBMIT</Button>
@@ -132,10 +146,17 @@ class Auth extends Component {
 }
 
 
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
