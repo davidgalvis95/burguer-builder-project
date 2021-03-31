@@ -9,7 +9,8 @@ const navigationItems = (props) => (
         {/*So far the property is hardcoded*/}
         {/*We no longer need this active since the active context is now set in the NavLink component*/}
         <NavigationItem link="/" exact>Burguer builder</NavigationItem>
-        <NavigationItem link="/orders">Orders</NavigationItem>
+        {/*here we will not let the orders nav item to appear if the user is not authenticated*/}
+        {props.isAuthenticated ? <NavigationItem link="/orders">Orders</NavigationItem>: null}
         {!props.isAuthenticated ?
             <NavigationItem link="/auth">Authenticate</NavigationItem>:
             <NavigationItem link="/logout">Logout</NavigationItem>}

@@ -81,7 +81,13 @@ class BurguerBuilder extends Component {
     //This method has to work as an arrow function, since if that one works as a normal declared method the this keyword will point internally to the method, and not to the class
     //as it's needed here
     purchaseHandler = () => {
-        this.setState({purchasing: true})
+        //due that the button in BuildControls is calling this handler, we want the user to be redirected to
+        //the auth page if he is not logged in and he wants to purchase, instead of continuing purchasing
+        if(this.props.isAuthenticated){
+            this.setState({purchasing: true})
+        }else{
+            this.props.history.push('/auth');
+        }
     }
 
     purchaseCanceledHandler = () => {
@@ -127,6 +133,7 @@ class BurguerBuilder extends Component {
                         disabled={disabledInfo}
                         purchasable={this.updatePurchaseState(this.props.ings)}
                         ordered={this.purchaseHandler}
+                        isAuth={this.props.isAuthenticated}
                         price={this.props.price}
                     />
                 </Aux>
@@ -162,7 +169,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burguerBuilder.ingredients,
         price: state.burguerBuilder.totalPrice,
-        error: state.burguerBuilder.error
+        error: state.burguerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     }
 }
 
