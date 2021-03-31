@@ -4,7 +4,10 @@ import {updateObject} from "../utility";
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    //this state property will be added in order to know where to redirect the customer when he/she is logged in
+    building: false,
+    authRedirectPath: '/'
 };
 
 const INGREDIENT_PRICES = {
@@ -19,7 +22,8 @@ const addIngredient = (state, action) => {
     const updatedAddIngs = updateObject(state.ingredients, updatedAddIng);
     const updatedAddState = {
         ingredients: updatedAddIngs,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     }
     return updateObject(state, updatedAddState)
 }
@@ -29,7 +33,8 @@ const removeIngredient = (state, action) => {
     const updatedRemoveIngs = updateObject(state.ingredients, updatedRemoveIng);
     const updatedRemoveState = {
         ingredients: updatedRemoveIngs,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     }
     return updateObject(state, updatedRemoveState);
 }
@@ -38,7 +43,9 @@ const setIngredients = (state, action) => {
     return updateObject(state, {
         ingredients: action.ingredients,
         totalPrice: 4,
-        error: false
+        error: false,
+        //when importing the ingredients initially we don not want to say that we are building a burguer
+        building: false
     })
 }
 

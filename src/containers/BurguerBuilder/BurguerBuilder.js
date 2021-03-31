@@ -86,6 +86,9 @@ class BurguerBuilder extends Component {
         if(this.props.isAuthenticated){
             this.setState({purchasing: true})
         }else{
+            //If the user is not logged in then send this path to the redux store so that it could get accessed later on
+            //by the auth component and it will redirect to what is set here
+            this.props.onSetAuthRedirectPath('/checkout');
             this.props.history.push('/auth');
         }
     }
@@ -178,9 +181,11 @@ const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
         onIngredientDeleted: (ingName) => dispatch(actions.removeIngredient(ingName)),
-        //TODO: look why this is not being called
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onInitPurchase: () => dispatch(actions.purchaseInit())
+        onInitPurchase: () => dispatch(actions.purchaseInit()),
+        //This action will be triggered whenever the user is not authenticated so that when the user gets authenticated
+        //he/she will get redirected to the checkout page
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
     }
 }
 

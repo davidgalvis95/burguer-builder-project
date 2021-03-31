@@ -51,6 +51,14 @@ class Auth extends Component {
         isSignUp: true
     }
 
+    componentDidMount() {
+        if(!this.props.buildingBurguer && this.props.authRedirectPath !== '/'){
+            //if the customer is not building the burguer and the path is set to a different thing just
+            //redirect to home again
+            this.props.onSetAuthRedirectPath()
+        }
+    }
+
     checkValidity(value, rules) {
 
         let isValid = true;
@@ -176,7 +184,7 @@ class Auth extends Component {
 
         let authRedirect = null;
         if(this.props.isAuthenticated){
-            authRedirect = <Redirect to="/"/>
+            authRedirect = <Redirect to={this.props.authRedirectPath}/>
         }
 
         return(
@@ -201,12 +209,15 @@ const mapStateToProps = state => {
         loading: state.auth.loading,
         error: state.auth.error,
         //whenever the user is authenticated we should have a token, that's why we know
-        isAuthenticated: state.auth.token != null
+        isAuthenticated: state.auth.token != null,
+        buildingBurguer: state.burguerBuilder.building,
+        authRedirectPath: state.auth.authRedirectPath
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
+        onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/')),
         onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
     }
 }
