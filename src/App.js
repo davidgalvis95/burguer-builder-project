@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Route} from "react-router-dom";
 import {Switch} from "react-router";
+import {connect} from 'react-redux';
 
 import Layout from './hoc/Layout/Layout'
 import BurguerBuilder from './containers/BurguerBuilder/BurguerBuilder';
@@ -8,6 +9,7 @@ import Checkout from "./containers/Checkout/Checkout";
 import Orders from "./containers/Orders/Orders";
 import Auth from "./containers/Auth/Auth";
 import Logout from "./containers/Auth/Logout/Logout";
+import * as actions from './store/actions/index'
 
 class App extends Component {
 
@@ -22,7 +24,11 @@ class App extends Component {
   //     },5000)
   // }
 
-
+    //This call on the did mount will ensure that every subcomponent(this encloses all the app) from which this app component is parent of,
+    //everytime is updated or re-rendered will check if is time to log out due to expiration of the token
+    componentDidMount() {
+        this.props.onTryAutoSignup();
+    }
 
     render () {
       // const burguerBuilder = this.state.show? <BurguerBuilder></BurguerBuilder> :null;
@@ -43,4 +49,10 @@ class App extends Component {
   };
 }
 
-export default App;
+const mapDispatchToProps = dispatch => {
+    return{
+        onTryAutoSignup: () => dispatch(actions.authCheckState())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(App);
