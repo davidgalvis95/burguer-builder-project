@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {Route} from "react-router-dom";
-import {Switch} from "react-router";
+import {Route, Switch, withRouter} from "react-router";
 import {connect} from 'react-redux';
 
 import Layout from './hoc/Layout/Layout'
@@ -55,4 +54,6 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(App);
+//When working with redux, it will block the routing component to perform ok, so to get back the routing functionality
+//we should enclose our connected component with withRouter, as shown below
+export default withRouter(connect(null, mapDispatchToProps)(App));
