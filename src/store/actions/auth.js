@@ -53,11 +53,11 @@ export const auth = (email, password, isSignUp) => {
 
         }
 
-        //TODO find the way to use the API_KEY
-        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]';
+        //this api key identifies the application to firebase
+        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCyAYmx6jJbSAKwsEuit9l-hJZ23JSR8uc';
 
         if(!isSignUp){
-            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]';
+            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCyAYmx6jJbSAKwsEuit9l-hJZ23JSR8uc';
         }
 
         axios.post(url, authData)
