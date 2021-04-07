@@ -14,7 +14,7 @@ class Orders extends Component {
     //Here we use the component did mount because the axios loading will be called only when the component is loaded, no when is updated or any other action
     //also because the component will be called once
     componentDidMount() {
-        this.props.onFetchOrders(this.props.token);
+        this.props.onFetchOrders(this.props.token, this.props.userId);
     }
 
     render() {
@@ -37,14 +37,15 @@ const
         return {
             orders: state.order.orders,
             loading: state.order.loading,
-            token: state.auth.token
+            token: state.auth.token,
+            userId: state.auth.userId
         }
     }
 
 const
     mapDispatchtoProps = dispatch => {
         return {
-            onFetchOrders: (token) => dispatch(actions.fetchOrders(token))
+            onFetchOrders: (token, userId) => dispatch(actions.fetchOrders(token, userId))
         }
     }
 

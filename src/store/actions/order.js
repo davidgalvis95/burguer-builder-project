@@ -66,11 +66,14 @@ export const fetchOrdersStart = () => {
     }
 }
 
-export const fetchOrders = (token) => {
+export const fetchOrders = (token, userId) => {
     //we could use the getState here but
     return dispatch => {
-        dispatch(fetchOrdersStart())
-        axios.get('/orders.json?auth=' + token)
+        dispatch(fetchOrdersStart());
+        //The orderBy property tells firebase to order by that, but not just that but also tells that we can filter data by that parameter
+        //and that is exactly what we want to do, so the equalTo param, tells firebase that the orderBy para should be equal to what we are passing there
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
+        axios.get('/orders.json' + queryParams)
             .then(res => {
             console.log(res.data);
             const fetchedOrders = [];
