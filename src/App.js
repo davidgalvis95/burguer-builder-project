@@ -4,11 +4,22 @@ import {connect} from 'react-redux';
 
 import Layout from './hoc/Layout/Layout'
 import BurguerBuilder from './containers/BurguerBuilder/BurguerBuilder';
-import Checkout from "./containers/Checkout/Checkout";
-import Orders from "./containers/Orders/Orders";
-import Auth from "./containers/Auth/Auth";
 import Logout from "./containers/Auth/Logout/Logout";
 import * as actions from './store/actions/index'
+import asyncComponent from "./hoc/AsyncComponent/AsyncComponent";
+
+//This is a way that has been learnt to load components when they are needed and not all the time
+const asyncCheckout = asyncComponent( () => {
+    return import("./containers/Checkout/Checkout");
+})
+
+const asyncOrders = asyncComponent( () => {
+    return import("./containers/Orders/Orders");
+})
+
+const asyncAuth = asyncComponent( () => {
+    return import("./containers/Auth/Auth");
+})
 
 class App extends Component {
 
@@ -22,7 +33,7 @@ class App extends Component {
 
         let theRoutes = (<Switch>
                 <Route path="/" component={BurguerBuilder}/>
-                <Route path="/auth" component={Auth}/>
+                <Route path="/auth" component={asyncAuth}/>
                 <Redirect to="/"/>
             </Switch>);
 
@@ -30,10 +41,10 @@ class App extends Component {
             //When we sis not add the Auth component here it was not redirecting when the user was not logged in
             //and wanted to buy a burguer and need to auth and then redirected to keep on buying
             theRoutes = (<Switch>
-                <Route path="/checkout" component={Checkout}/>
-                <Route path="/orders" component={Orders}/>
+                <Route path="/checkout" component={asyncCheckout}/>
+                <Route path="/orders" component={asyncOrders}/>
                 <Route path="/logout" component={Logout}/>
-                <Route path="/auth" component={Auth}/>
+                <Route path="/auth" component={asyncAuth}/>
                 <Route path="/" component={BurguerBuilder}/>
             </Switch>);
         }
@@ -62,4 +73,4 @@ const mapDispatchToProps = dispatch => {
 
 //When working with redux, it will block the routing component to perform ok, so to get back the routing functionality
 //we should enclose our connected component with withRouter, as shown below
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
