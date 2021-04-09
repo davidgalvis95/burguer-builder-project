@@ -17,7 +17,8 @@ const sideDrawer = (props) => {
         <Aux>
             <Backdrop show={props.open} clicked={props.closed}/>
             {/*Here we are showing the sideDrawer depending on the props that are being passed to this component*/}
-            <div className={attachedClasses.join(' ')}>
+            {/*Here we say that the side drawer should be closed if we click on it, not only when clicking the backdrop*/}
+            <div className={attachedClasses.join(' ')} onClick={props.closed}>
                 {/*This is the other way, by passing the height as a prop into the logo*/}
                 {/*<Logo height="11%" />*/}
                 <div className={classes.Logo}>

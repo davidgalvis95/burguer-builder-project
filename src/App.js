@@ -27,10 +27,13 @@ class App extends Component {
             </Switch>);
 
         if(this.props.isAuthenticated){
+            //When we sis not add the Auth component here it was not redirecting when the user was not logged in
+            //and wanted to buy a burguer and need to auth and then redirected to keep on buying
             theRoutes = (<Switch>
                 <Route path="/checkout" component={Checkout}/>
                 <Route path="/orders" component={Orders}/>
                 <Route path="/logout" component={Logout}/>
+                <Route path="/auth" component={Auth}/>
                 <Route path="/" component={BurguerBuilder}/>
             </Switch>);
         }
