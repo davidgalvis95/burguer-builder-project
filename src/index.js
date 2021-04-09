@@ -13,7 +13,9 @@ import order from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
 
 //here we need the basic setup because
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+//This environment variable that can be found in config/env.js is good because that we we can hide the redux state of the redux extension
+//from the outer world, or the users, at least we are in dev environment, which is what that env variable means
+const composeEnhancers = (process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null) || compose;
 
 const rootReducer = combineReducers({
     burguerBuilder: burguerBuilder,
