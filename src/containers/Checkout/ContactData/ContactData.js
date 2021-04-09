@@ -7,7 +7,8 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import Input from '../../../components/UI/Input/Input'
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../../store/actions/index'
+import * as actions from '../../../store/actions/index';
+import {updateObject} from "../../../shared/utility";
 
 
 class ContactData extends Component {
@@ -178,19 +179,21 @@ class ContactData extends Component {
 
 
     inputChangedHandler = (event, inputIdentifier) => {
+
+        //reusing the updatedObject function here too, as in the actions of the redux state
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: event.target.value,
+            valid: this.checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        })
         // console.log(event.target.value);
         //here we need to update the state immutably by creating clones of the actual state
         //so far with the next line of code, this only creates a clone of the wrapper object (in this case the array of the outerForm)
         //but it does not create a clone of the internal nested objects as the elementConfig or even the value, that's why we need to clone them all or
         //just replace what we need to replace
-        const updatedOrderForm = {...this.state.orderForm}
-        const updatedFormElement = {...updatedOrderForm[inputIdentifier]}
-        //If we were working with the elementConfig, that is an element that is nested inside one of the elements of the orderForm, we would also
-        //needed to use the spread operator to clone it, but since that's not the case, we only will clone one of the elements and access the value
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        updatedFormElement.touched = true;
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier]: updatedFormElement
+        })
 
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
