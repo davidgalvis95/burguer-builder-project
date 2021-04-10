@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import axios from "axios";
-import {dispatch} from "jest-circus/build/state";
 
 export const authStart = () => {
     return {
@@ -103,7 +102,7 @@ export const authCheckState = () => {
                 dispatch(authSuccess(token, userId));
                 //is better to use the getTime function to make comparisons of time like the one below, also
                 //since this one produces a value in milliseconds, and the checkAuthTimeout receives seconds, then we divide it into 1000
-                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+                dispatch(checkAuthTimeout((new Date(expirationDate).getTime() - new Date().getTime()) / 1000));
             }
         }
     }
