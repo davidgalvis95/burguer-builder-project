@@ -24,4 +24,9 @@ describe('<NavigationItems>', () => {
         wrapper = shallow(<NavigationItems/>).setProps({isAuthenticated: true});
         expect(wrapper.find(NavigationItem)).toHaveLength(3);
     })
+
+    it('should render Logout <NavigationItem> if authenticated', () => {
+        wrapper = shallow(<NavigationItems/>).setProps({isAuthenticated: true});
+        expect(wrapper.contains(<NavigationItem link="/logout">Logout</NavigationItem>)).toEqual(true);
+    })
 })
