@@ -19,7 +19,10 @@ const INGREDIENT_PRICES = {
     bacon: 0.7
 }
 
-class BurguerBuilder extends Component {
+//This is a hack added to the class in order to separate redux from it, since in this class we have the connect()
+//That basically brings up redux, so in order to test a container is better to do it separating redux from it
+//so this export can be used in the test instead of the one with redux below
+export class BurguerBuilder extends Component {
     // constructor(props) {
     //     super(props);
     //     this.state = {...}
